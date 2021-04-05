@@ -7,6 +7,7 @@ import IP_SpainComponent from "./components/IP_SpainComponent";
 import IP_PortugalComponent from "./components/IP_PortugalComponent";
 import IP_OverComponent from "./components/IP_OverComponent";
 import IP_EntryComponent from "./components/IP_EntryComponent";
+import Test from "./components/Test";
 
 class App extends React.Component {
   render() {
@@ -23,6 +24,7 @@ class App extends React.Component {
             <li><Link to={'/spain'} className="nav-link">Origin in Spain</Link></li>
             <li><Link to={'/over'} className="nav-link">Over the Irebian Peninsula</Link></li>
             <li><Link to={'/entry'} className="nav-link">Entered the Irebian Peninsula</Link></li>
+            <li><Link to={'/test'} className="nav-link">Test</Link></li>
           </ul>
           </nav>
           <hr />
@@ -33,7 +35,8 @@ class App extends React.Component {
               <Route path='/portugal' component={IP_PortugalComponent} />
               <Route path='/over' component={IP_OverComponent} />
               <Route path='/entry' component={IP_EntryComponent} />
-              
+              <Route path='/test' component={Test} />
+
           </Switch>
         </div>
       </Router>

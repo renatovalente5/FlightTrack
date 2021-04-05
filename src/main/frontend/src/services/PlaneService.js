@@ -13,12 +13,17 @@ const PLANES_IP_PORTUGAL_API_URL = "http://localhost:8081/portugal";
 const PLANES_IP_SPAIN_API_URL = "http://localhost:8081/spain";
 const PLANES_IP_OVER_API_URL = "http://localhost:8081/over";
 const PLANES_IP_ENTRY_API_URL = "http://localhost:8081/entry";
+const PLANES_REST_API_URL_TEST = "http://localhost:8081/test";
 //const PLANES_IP_CHILD_API_URL = "http://localhost:8081/child";
 
 class PlaneService {
 
     getPlanes(){
         return axios.get(PLANES_REST_API_URL);
+    }
+    
+    getTest(){
+        return axios.get(PLANES_REST_API_URL_TEST);
     }
     
     getPlanesIp(){

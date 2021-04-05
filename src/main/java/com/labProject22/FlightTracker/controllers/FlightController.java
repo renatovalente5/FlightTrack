@@ -32,13 +32,18 @@ public class FlightController {
     @GetMapping("/planes")
     public List<Plane> getPlanes(){
         String url = "https://opensky-network.org/api/states/all?";
-        System.out.println("ola");
+//        System.out.println("ola");
         PlanesResponse objects = restTemplate.getForObject(url, PlanesResponse.class);
         
         allPlanes.clear();
         for (int i=0; i < objects.getStates().length; i++){
             allPlanes.add(addPlane(objects,i));
         } 
+        return allPlanes;
+    }
+    
+    @GetMapping("/test")
+    public String  getTest(){ 
         
         //Guardar percuso de todos os aviões a cada 10 seg.
         for (Plane p : allPlanes) {
@@ -63,8 +68,7 @@ public class FlightController {
         for (Map.Entry<String, LinkedList<Plane>> p : trackerPlane.entrySet()) {
             System.out.println(p.getKey() + ":" + p.getValue());
         }
-        
-        return allPlanes;
+        return "PASSOU NO TESTE";
     }
     
     @GetMapping("/ip")
