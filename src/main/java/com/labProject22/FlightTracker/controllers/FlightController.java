@@ -28,6 +28,7 @@ public class FlightController {
     private List<Plane> startPeninsula = new LinkedList<Plane>();
     private List<Plane> overPeninsula = new LinkedList<Plane>();
     private List<Plane> entrouNaPeninsula = new LinkedList<Plane>();
+    private List<Plane> saiuDaPeninsula = new LinkedList<Plane>();
     private List<Plane> alreadyPeninsula = new LinkedList<Plane>();
     private Map<String, LinkedList<Plane>> trackerPlane = new HashMap<String, LinkedList<Plane>>();
     private static final Logger logger = LogManager.getLogger(FlightController.class);
@@ -59,12 +60,14 @@ public class FlightController {
     // Obter todos os avioes na area da Peninsula Iberica (retorna uma lista sempre atualizada)
     @GetMapping("/over")
     public List<Plane> getAllPlanes_IberianPeninsula(){
-        entrouNaPeninsula.clear();
+        //entrouNaPeninsula.clear();
+        //saiuDaPeninsula.clear();
         List<Plane> aux = overPeninsula;
         
         overPeninsula = getPlanes("lamin=36.7&lomin=-8.23&lamax=42&lomax=-2.7");
         if(aux.isEmpty()) aux = overPeninsula;
         
+        //Para ver se ENTROU algum Avião
         boolean in;
         for(Plane p: overPeninsula){
             in = false;
@@ -76,14 +79,34 @@ public class FlightController {
             }
             if(in==false){
                 entrouNaPeninsula.add(p);
-                System.out.println("Entrou");
+                System.out.println("--- Entrou ---");
             }
         }
-        System.out.print("Entrou Lista: " + entrouNaPeninsula);
+        System.out.println("Entrou Lista: " + entrouNaPeninsula);
         if(!entrouNaPeninsula.isEmpty()){
             //Ativar evento de entrada
-            
         }
+        
+        //Para ver se SAIU algum Avião
+        boolean out;
+        for(Plane a: aux){
+            out = false;
+            String icao = a.getIcao();
+            for(Plane p: overPeninsula){
+                if(p.getIcao().equals(icao)){
+                    out = true;
+                }
+            }
+            if(out==false){
+                saiuDaPeninsula.add(a);
+                System.out.println("--- Saiu ---");
+            }
+        }
+        System.out.println("Saiu Lista: " + saiuDaPeninsula);
+            if(!saiuDaPeninsula.isEmpty()){
+                //Ativar evento de saida
+        }
+
                 
         return overPeninsula;
         
