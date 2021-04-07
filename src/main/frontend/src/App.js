@@ -2,7 +2,6 @@ import React from "react";
 import './App.css';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import IP_OverComponent from "./components/IP_OverComponent";
-import IP_PlaneComponent from "./components/IP_PlaneComponent";
 import IP_EntryComponent from "./components/IP_EntryComponent";
 import Test from "./components/Test";
 import MapComponent from "./components/MapComponent";
@@ -36,7 +35,6 @@ class App extends React.Component {
         
                     <nav className="navbar navbar-expand-lg navbar-light bg-light">
                         <ul className="navbar-nav mr-auto">
-                            <li><Link to={'/ip'} className="nav-link">Origin </Link></li>
                             <li><Link to={'/over'} className="nav-link">Over </Link></li>
                             <li><Link to={'/entry'} className="nav-link">Entered</Link></li>
                             <li><Link to={'/test'} className="nav-link">Test</Link></li>
@@ -45,7 +43,6 @@ class App extends React.Component {
                     </nav>
                     <hr />
                     <Switch>
-                        <Route path='/ip' component={IP_PlaneComponent} />
                         <Route path='/over' component={IP_OverComponent} />
                         <Route path='/entry' component={IP_EntryComponent} />
                         <Route path='/test' component={Test} />

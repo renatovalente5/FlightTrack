@@ -7,10 +7,11 @@ import {ModalComponent} from './ModalComponent';
 import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import styled from 'styled-components';
+import Alert from 'react-bootstrap/Alert';
 
 const H0 = styled.h1({
     fontSize: 25,
-    paddingBottom: 10,
+    paddingBottom: 30,
     paddingTop: 20,
     color: 'black',
     textAlign: "center"
@@ -22,6 +23,7 @@ const H1 = styled.h1({
     paddingTop: 0,
     textAlign: "center"
 });
+
 class IP_OverComponent extends React.Component {
 
     constructor(props){
@@ -29,7 +31,7 @@ class IP_OverComponent extends React.Component {
         this.state = {
           planes:[],
           addModalShow: false,
-          dados: "oleee"
+          idSelectedPlane: "RITA"
         }
       this.loadData = this.loadData.bind(this);
     }
@@ -50,10 +52,11 @@ class IP_OverComponent extends React.Component {
     }
     
     buttonOnClick(planeIdentifier) {
-      window.alert(planeIdentifier);
       //console.log("Button clicked = " + planeIdentifier);
       //window.open(`/child?id=${planeIdentifier}`, "_blank");
       
+      window.open(`/id=${planeIdentifier}`,"_blank");
+      //window.alert(planeIdentifier);
     }
       
             
@@ -61,15 +64,15 @@ class IP_OverComponent extends React.Component {
       let addModalClose = () => this.setState({addModalShow:false});
       const {dados} = this.state;
       
+        const verd = "RITA";
+        const verm = "AMANTE";
       return(
         <div>
             <H0 className="text-center" > All planes <b style={{ color: '#0097a7'}}>over</b> the <b>Irebian Peninsula</b> </H0>
-
-            <H1 style={{textAlign: 'center', paddingBottom:'30'}}>
-            <Link to={"/ip"} style={{ color: '#0097a7'}}> All planes with <b>origin</b> in the Irebian Peninsula</Link>{' • '}
-                <Link to={"/over"} style={{ color: '#0097a7'}}> All planes <b>over</b> Irebian Peninsula </Link>
-            </H1>
             
+        <AlertaVerde brand={verd} />
+        <AlertaVermelho brand={verm} />
+        
           <table className = "table table-striped">
             <thead>
               <tr>
@@ -114,6 +117,36 @@ class IP_OverComponent extends React.Component {
         </div>
       );
     }
+}
+
+class AlertaVerde extends React.Component {
+  render() {
+    return (
+        <div>
+            <Alert variant="success">
+                <Alert.Heading>ALERT !</Alert.Heading>
+                <hr />
+                <p className="mb-0"> Acabou de <b>sair</b> na Península Ibérica o avião <b> {this.props.brand} </b>. </p>  
+            </Alert>
+        </div>
+
+    );
+  }
+}
+
+class AlertaVermelho extends React.Component {
+  render() {
+    return (
+        <div>
+            <Alert variant="danger">
+                <Alert.Heading>ALERT !</Alert.Heading>
+                <hr />
+                <p className="mb-0"> Acabou de <b>sair</b> na Península Ibérica o avião <b> {this.props.brand} </b>. </p>  
+            </Alert>
+        </div>
+
+    );
+  }
 }
 
 export default IP_OverComponent

@@ -57,6 +57,14 @@ public class FlightController {
         return null;
     }
     
+    
+    @GetMapping("/{id}")
+    public List<Plane> testeRita(@PathVariable String id){
+        String q = "icao24=" + id;
+        List<Plane> planeList = getPlanes(q);
+        return planeList;
+    }
+    
     // Obter todos os avioes na area da Peninsula Iberica (retorna uma lista sempre atualizada)
     @GetMapping("/over")
     public List<Plane> getAllPlanes_IberianPeninsula(){
@@ -120,6 +128,18 @@ public class FlightController {
 //              .collect(Collectors.toList());
 //        System.out.println(actualList);
 //        return actualList;      
+    }
+    
+    @GetMapping("/over2")
+    public List<Plane> teste(){
+        List<Plane> antiga = overPeninsula;
+        List<Plane> nova = getPlanes("lamin=36.7&lomin=-8.23&lamax=42&lomax=-2.7");
+        
+        List<Plane> actualList = nova.stream().filter(two -> overPeninsula.stream()
+              .anyMatch(one -> one.getIcao().equals(two.getIcao()) ))
+              .collect(Collectors.toList());
+        System.out.println(actualList);
+        return actualList;      
     }
     
     // Obter dados do aviao com o icao=id

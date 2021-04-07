@@ -1,49 +1,95 @@
 import React from "react";
-import Alert from 'react-bootstrap/Alert';
+import ReactDOM from "react-dom";
+//import {Button} from 'react-bootstrap';
+//import ButtonToolbar from 'react-bootstrap/Button';
+import {ButtonToolbar} from 'react-bootstrap';
+import {ModalComponent} from './ModalComponent';
 import axios from "axios";
+import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from "react-router-dom";
+import styled from 'styled-components';
+import Alert from 'react-bootstrap/Alert';
+
+const H0 = styled.h1({
+    fontSize: 25,
+    paddingBottom: 30,
+    paddingTop: 20,
+    color: 'black',
+    textAlign: "center"
+});
+
+const H1 = styled.h1({
+    paddingBottom: 30,
+    fontSize: 12,
+    paddingTop: 0,
+    textAlign: "center"
+});
 
 class Palha extends React.Component {
 
     constructor(props){
-      super(props)
+      super(props);
         this.state = {
-          ddd:""
+          planes:[]
         }
       this.loadData = this.loadData.bind(this);
     }
 
     componentDidMount(){
       this.loadData();
+//      setInterval(this.loadData, 10000);
     }
 
-    async postData() {
+    async loadData() {
         try {
-            var newURL = "http://localhost:8081/"+"4952a4";
-            return axios.post(newURL);
-            axios.post().then(response => {
-                this.setState({
-                    planes: response.data
-                })
+            axios.get("http://localhost:8081/3442cc").then(response => {
+                this.setState({ planes: response.data })
             });
         } catch (e) {
             console.log(e);
         }
-    }
-          
-    render(){
+    }     
+            
+    render(){       
+      
       return(
         <div>
-          <h3 className="text-center"> Test </h3>
-
-           <Alert variant="warning">
-            <Alert.Heading>ALERT !</Alert.Heading>
-            <hr />
-            <p className="mb-0"> Acabou de entrar na Península Ibérica o avião <b> XPTO </b> com país de origem XPTO2, latitude XPTO3 e longitude XPTO4. </p>  
-          </Alert>
-
-          {this.state.ddd}
+            <H0 className="text-center" > OLAAAAA <b style={{ color: '#0097a7'}}>over</b> the <b>Irebian Peninsula</b> </H0>
+            
+        
+          <table className = "table table-striped">
+            <thead>
+              <tr>
+                <td>Icao24</td>
+                <td>Callsign</td>
+                <td>Origin Country</td>
+                <td>Time position</td>
+                <td>Longitude</td>
+                <td>Latitude</td>
+                <td>Altitude</td>
+                <td>Velocity</td>
+              </tr>
+            </thead>
+              <tbody>
+                {
+                  this.state.planes.map(
+                    plane =>
+                    <tr key = {plane.icao}>
+                      <td>{plane.icao}</td>
+                      <td>{plane.callsign}</td>
+                      <td>{plane.origin_country}</td>
+                      <td>{plane.time_position}</td>
+                      <td>{plane.longitude}</td>
+                      <td>{plane.latitude}</td>
+                      <td>{plane.baro_altitude}</td>
+                      <td>{plane.velocity}</td>
+                    </tr>
+                  )
+                }
+              </tbody>
+          </table>
+          
         </div>
-      )
+      );
     }
 }
 
