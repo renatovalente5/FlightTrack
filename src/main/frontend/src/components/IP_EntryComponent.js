@@ -1,5 +1,5 @@
 import React from "react";
-import PlaneService from "../services/PlaneService";
+import axios from "axios";
 
 class IP_EntryComponent extends React.Component {
 
@@ -18,11 +18,9 @@ class IP_EntryComponent extends React.Component {
 
     async loadData() {
         try {
-            PlaneService.getPlanesIpEntry().then((response) => {
-                this.setState({
-                planes: response.data
-            })
-        });
+            axios.get("http://localhost:8081/entry").then(response => {
+                this.setState({ planes: response.data })
+            });
         } catch (e) {
             console.log(e);
         }

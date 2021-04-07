@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Modal, Button, Row, Col, Form} from 'react-bootstrap';
 import {IP_OverComponent} from './IP_OverComponent';
+import axios from "axios";
 
 export class ModalComponent extends Component{
     constructor(props){
@@ -22,10 +23,7 @@ export class ModalComponent extends Component{
             </Modal.Header>
             <Modal.Body>
                 <div className="container">
-                    Escrever aqui toda a informação do avião.
-                    
-                    
-                    
+                    Escrever aqui toda a informação do avião.   
                 </div>
         
             </Modal.Body>

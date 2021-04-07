@@ -1,6 +1,9 @@
 package com.labProject22.FlightTracker.controllers;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.web.bind.annotation.PathVariable;
+import reactor.core.publisher.Flux;
 
 @RestController
 //@RequestMapping("/myapp")
@@ -17,34 +24,55 @@ public class FlightController {
        
     private RestTemplate restTemplate;
     private List<Plane> allPlanes = new LinkedList<Plane>();
-    private List<Plane> portugalPlanes = new LinkedList<Plane>();
-    private List<Plane> spainPlanes = new LinkedList<Plane>();
     private List<Plane> irebianPeninsulaPlanes = new LinkedList<Plane>();
     private List<Plane> overPeninsula = new LinkedList<Plane>();
-    private List<Plane> entryPeninsula = new LinkedList<Plane>();
+    private List<Plane> alreadyPeninsula = new LinkedList<Plane>();
     private Map<String, LinkedList<Plane>> trackerPlane = new HashMap<String, LinkedList<Plane>>();
     private static final Logger logger = LogManager.getLogger(FlightController.class);
+    
+    private List<Plane> planesIberianP = new LinkedList<Plane>();
+
+    private String url = "https://opensky-network.org/api/states/all?";
     
     public FlightController(){
         this.restTemplate = new RestTemplate();
     }
         
-    @GetMapping("/planes")
-    public List<Plane> getPlanes(){
-        String url = "https://opensky-network.org/api/states/all?";
-//        System.out.println("ola");
-        PlanesResponse objects = restTemplate.getForObject(url, PlanesResponse.class);
+    // Obter todos os avioes com certos parametros
+    public List<Plane> getPlanes(String parameters){
+        PlanesResponse obj = restTemplate.getForObject(url+parameters,PlanesResponse.class);
+        List<Plane> planes = new LinkedList<Plane>();
+        for(int i = 0; i < obj.getStates().length; i++){
+            planes.add(addPlane(obj,i));
+        }
+        return planes;
+    }
+
+    // Obter todos os avioes na area da Peninsula Iberica (retorna uma lista sempre atualizada)
+    @GetMapping("/over")
+    private List<Plane> getAllPlanes_IberianPeninsula(){
+        List<Plane> area = getPlanes("lamin=36.7&lomin=-8.23&lamax=42&lomax=-2.7");
         
-        allPlanes.clear();
-        for (int i=0; i < objects.getStates().length; i++){
-            allPlanes.add(addPlane(objects,i));
+        if(overPeninsula.isEmpty()){
+            overPeninsula = area;
         } 
-        return allPlanes;
+        List<Plane> actualList = area.stream().filter(two -> overPeninsula.stream()
+              .anyMatch(one -> one.getIcao().equals(two.getIcao()) ))
+              .collect(Collectors.toList());
+        System.out.println(actualList);
+        return actualList;      
     }
     
+    // Obter dados do aviao com o icao=id
+    @GetMapping("/planes/{id}")
+    public List<Plane> getDataPlane(@PathVariable String id){
+        String q = "icao24=" + id;
+        List<Plane> planeList = getPlanes(q);
+        return planeList;
+    }
+       
     @GetMapping("/test")
-    public String  getTest(){ 
-        
+    public String  getTest(){        
         //Guardar percuso de todos os aviões a cada 10 seg.
         for (Plane p : allPlanes) {
             LinkedList<Plane> auxList = new LinkedList<Plane>();
@@ -62,8 +90,6 @@ public class FlightController {
                 trackerPlane.put(p.getIcao(), auxList);
             }
         }
-        
-        System.out.println("oli");
         logger.debug("Debug log message");
         for (Map.Entry<String, LinkedList<Plane>> p : trackerPlane.entrySet()) {
             System.out.println(p.getKey() + ":" + p.getValue());
@@ -71,113 +97,27 @@ public class FlightController {
         return "PASSOU NO TESTE";
     }
     
-    @GetMapping("/ip")
-//    @GetMapping("/planes/ip")
-    public List<Plane> getIrebianPeninsulaOriginPlanes(){    
-        irebianPeninsulaPlanes.clear();
-        List<Plane> temp = getPlanes();
-        for (Plane plane:temp){
-            if(plane.getOrigin_country().equals("Spain") || plane.getOrigin_country().equals("Portugal")){
-                irebianPeninsulaPlanes.add(plane);
-            }
-        }   
-        
-        return irebianPeninsulaPlanes;
-        
-//        irebianPeninsulaPlanes.clear();
-//        for (Plane plane:allPlanes){
-//            if(plane.getOrigin_country().equals("Spain") || plane.getOrigin_country().equals("Portugal")){
-//                irebianPeninsulaPlanes.add(plane);
-//            }
-//        }       
-//        return irebianPeninsulaPlanes;
-
+    @GetMapping(path = "/event", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> streamFlux() {
+        return Flux.interval(Duration.ofSeconds(1))
+          .map(sequence -> "Flux - " + LocalTime.now().toString());
     }
     
-    @GetMapping("/portugal")
-//    @GetMapping("/planes/ip/portugal")
-    public List<Plane> getPortugalPlanes(){
-        portugalPlanes.clear();
-        List<Plane> temp = getPlanes();
-        for (Plane plane:temp){
-            if(plane.getOrigin_country().equals("Portugal")){
-                portugalPlanes.add(plane);
-            }
-        }   
-        
-//        portugalPlanes.clear();
-//        for (Plane plane:allPlanes){
-//            if(plane.getOrigin_country().equals("Portugal")){
-//                portugalPlanes.add(plane);
-//            }
-//        }
-        return portugalPlanes;
-    }
+//    @GetMapping(value="/ola", produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+//    public Flux<List<Plane>> getStockPrice() {
+//            return stockPriceService.getStockPriceData(stockPriceList);
+//    }
     
-    @GetMapping("/spain")
-//    @GetMapping("/planes/ip/spain")
-    public List<Plane> getSpainPlanes(){
-        spainPlanes.clear();
-        
-        List<Plane> temp = getPlanes();
-        for (Plane plane:temp){
-            if(plane.getOrigin_country().equals("Spain")){
-                spainPlanes.add(plane);
-            }
-        }   
-        
-//        for (Plane plane:allPlanes){
-//            if(plane.getOrigin_country().equals("Spain")){
-//                spainPlanes.add(plane);
-//            }
-//        }        
-        return spainPlanes;
+    @GetMapping("/stream-sse")
+    public Flux<ServerSentEvent<String>> streamEvents() {
+        return Flux.interval(Duration.ofSeconds(1))
+          .map(sequence -> ServerSentEvent.<String> builder()
+            .id(String.valueOf(sequence))
+              .event("periodic-event")
+              .data("SSE - " + LocalTime.now().toString())
+              .build());
     }
         
-    @GetMapping("/over")
-//    @GetMapping("/planes/ip/over")
-    public List<Plane> getIrebianPeninsulaPlanes(){  
-        overPeninsula.clear();
-        
-        List<Plane> temp = getPlanes();
-        for (Plane plane:temp){
-            if(plane.getLongitude() >= -8.23 && plane.getLongitude() <= -2.7 && plane.getLatitude() >= 36.7 && plane.getLatitude() <= 42){
-                    overPeninsula.add(plane);
-            }
-        }   
-        
-//        for (Plane plane:allPlanes){
-//            if(plane.getLongitude() >= -8.23 && plane.getLongitude() <= -2.7 && plane.getLatitude() >= 36.7 && plane.getLatitude() <= 42){
-//                    overPeninsula.add(plane);
-//            }
-//        }
-        return overPeninsula;
-    }
-    
-    @GetMapping("/entry")
-//    @GetMapping("/planes/ip/entry")
-    public List<Plane> getIrebianPeninsulaEntryPlanes(){    
-        entryPeninsula.clear();
-        List<Plane> temp = getPlanes();
-        //List<Plane> over = getIrebianPeninsulaPlanes();
-        for (Plane plane:temp){
-            if(plane.getLongitude() >= -8.23 && plane.getLongitude() <= -2.7 && plane.getLatitude() >= 36.7 && plane.getLatitude() <= 42){
-                if(!overPeninsula.contains(plane)){
-                    entryPeninsula.add(plane);
-                }
-            }
-        }   
-        
-//        for (Plane plane:allPlanes){
-//            if(plane.getLongitude() >= -8.23 && plane.getLongitude() <= -2.7 && plane.getLatitude() >= 36.7 && plane.getLatitude() <= 42){
-//                if(!overPeninsula.contains(plane)){
-//                    entryPeninsula.add(plane);
-//                }
-//            }
-//        }
-        return entryPeninsula;
-    }
-    
 //    @GetMapping("/child?id=")
 //    public void getChild(){
 //        

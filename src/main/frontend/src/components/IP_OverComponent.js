@@ -1,11 +1,27 @@
 import React from "react";
-import PlaneService from "../services/PlaneService";
 import ReactDOM from "react-dom";
 //import {Button} from 'react-bootstrap';
 //import ButtonToolbar from 'react-bootstrap/Button';
 import {ButtonToolbar} from 'react-bootstrap';
 import {ModalComponent} from './ModalComponent';
+import axios from "axios";
+import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from "react-router-dom";
+import styled from 'styled-components';
 
+const H0 = styled.h1({
+    fontSize: 25,
+    paddingBottom: 10,
+    paddingTop: 20,
+    color: 'black',
+    textAlign: "center"
+});
+
+const H1 = styled.h1({
+    paddingBottom: 30,
+    fontSize: 12,
+    paddingTop: 0,
+    textAlign: "center"
+});
 class IP_OverComponent extends React.Component {
 
     constructor(props){
@@ -20,26 +36,25 @@ class IP_OverComponent extends React.Component {
 
     componentDidMount(){
       this.loadData();
-      setInterval(this.loadData, 10000);
+//      setInterval(this.loadData, 10000);
     }
 
     async loadData() {
         try {
-            PlaneService.getPlanesIpOver().then((response) => {
-                this.setState({
-                planes: response.data
-            })
-        });
+            axios.get("http://localhost:8081/over").then(response => {
+                this.setState({ planes: response.data })
+            });
         } catch (e) {
             console.log(e);
         }
     }
     
-      buttonOnClick(planeIdentifier) {
-        window.alert(planeIdentifier);
-        //console.log("Button clicked = " + planeIdentifier);
-        window.open(`/child?id=${planeIdentifier}`, "_blank");
-      }
+    buttonOnClick(planeIdentifier) {
+      window.alert(planeIdentifier);
+      //console.log("Button clicked = " + planeIdentifier);
+      //window.open(`/child?id=${planeIdentifier}`, "_blank");
+      
+    }
       
             
     render(){       
@@ -48,7 +63,13 @@ class IP_OverComponent extends React.Component {
       
       return(
         <div>
-          <h3 className="text-center"> All planes over the Iberian Peninsula </h3>
+            <H0 className="text-center" > All planes <b style={{ color: '#0097a7'}}>over</b> the <b>Irebian Peninsula</b> </H0>
+
+            <H1 style={{textAlign: 'center', paddingBottom:'30'}}>
+            <Link to={"/ip"} style={{ color: '#0097a7'}}> All planes with <b>origin</b> in the Irebian Peninsula</Link>{' • '}
+                <Link to={"/over"} style={{ color: '#0097a7'}}> All planes <b>over</b> Irebian Peninsula </Link>
+            </H1>
+            
           <table className = "table table-striped">
             <thead>
               <tr>

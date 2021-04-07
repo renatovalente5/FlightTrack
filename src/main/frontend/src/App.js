@@ -1,47 +1,60 @@
 import React from "react";
 import './App.css';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import PlaneComponent from "./components/PlaneComponent";
-import IP_PlaneComponent from "./components/IP_PlaneComponent";
-import IP_SpainComponent from "./components/IP_SpainComponent";
-import IP_PortugalComponent from "./components/IP_PortugalComponent";
 import IP_OverComponent from "./components/IP_OverComponent";
+import IP_PlaneComponent from "./components/IP_PlaneComponent";
 import IP_EntryComponent from "./components/IP_EntryComponent";
 import Test from "./components/Test";
+import MapComponent from "./components/MapComponent";
+import Palha from "./components/Palha";
+import styled from 'styled-components';
 
-class App extends React.Component {
-  render() {
-    return (
-    <Router>
-        <div>
+const H0 = styled.h1({
+    fontSize: 25,
+    fontWeight: 'bold',
+    paddingBottom: 2,
+    paddingTop: 20,
+    color: 'black',
+    textAlign: "center"
+});
+
+const H1 = styled.h1({
+    fontSize: 15,
+    paddingBottom: 20,
+    paddingTop: 0,
+    color: 'gray',
+    textAlign: "center"
+});
         
-        <h2>Flight Tracker</h2>
-          <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <ul className="navbar-nav mr-auto">
-            <li><Link to={'/planes'} className="nav-link"> Planes </Link></li>
-            <li><Link to={'/ip'} className="nav-link">Origin in the Irebian Peninsula</Link></li>
-            <li><Link to={'/portugal'} className="nav-link">Origin in Portugal</Link></li>
-            <li><Link to={'/spain'} className="nav-link">Origin in Spain</Link></li>
-            <li><Link to={'/over'} className="nav-link">Over the Irebian Peninsula</Link></li>
-            <li><Link to={'/entry'} className="nav-link">Entered the Irebian Peninsula</Link></li>
-            <li><Link to={'/test'} className="nav-link">Test</Link></li>
-          </ul>
-          </nav>
-          <hr />
-          <Switch>
-              <Route exact path='/planes' component={PlaneComponent} />
-              <Route path='/ip' component={IP_PlaneComponent} />
-              <Route path='/spain' component={IP_SpainComponent} />
-              <Route path='/portugal' component={IP_PortugalComponent} />
-              <Route path='/over' component={IP_OverComponent} />
-              <Route path='/entry' component={IP_EntryComponent} />
-              <Route path='/test' component={Test} />
-
-          </Switch>
-        </div>
-      </Router>
-    );
-  }
+class App extends React.Component {
+    render() {
+        return (
+            <Router>
+                <div>
+                    <H0 ><i>Flight Tracker</i></H0>
+                    <H1 > flights from the Iberian Peninsula</H1>
+        
+                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                        <ul className="navbar-nav mr-auto">
+                            <li><Link to={'/ip'} className="nav-link">Origin </Link></li>
+                            <li><Link to={'/over'} className="nav-link">Over </Link></li>
+                            <li><Link to={'/entry'} className="nav-link">Entered</Link></li>
+                            <li><Link to={'/test'} className="nav-link">Test</Link></li>
+                            <li><Link to={'/palha'} className="nav-link">PALHA</Link></li>
+                        </ul>
+                    </nav>
+                    <hr />
+                    <Switch>
+                        <Route path='/ip' component={IP_PlaneComponent} />
+                        <Route path='/over' component={IP_OverComponent} />
+                        <Route path='/entry' component={IP_EntryComponent} />
+                        <Route path='/test' component={Test} />
+                        <Route path='/palha' component={Palha} />
+                    </Switch>
+                </div>
+            </Router>
+        );
+    }
 }
 
 export default App;
