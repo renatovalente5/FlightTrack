@@ -25,13 +25,15 @@ public class FlightController {
     private RestTemplate restTemplate;
     private List<Plane> allPlanes = new LinkedList<Plane>();
     private List<Plane> irebianPeninsulaPlanes = new LinkedList<Plane>();
+    private List<Plane> startPeninsula = new LinkedList<Plane>();
     private List<Plane> overPeninsula = new LinkedList<Plane>();
+    private List<Plane> entrouNaPeninsula = new LinkedList<Plane>();
     private List<Plane> alreadyPeninsula = new LinkedList<Plane>();
     private Map<String, LinkedList<Plane>> trackerPlane = new HashMap<String, LinkedList<Plane>>();
     private static final Logger logger = LogManager.getLogger(FlightController.class);
     
     private List<Plane> planesIberianP = new LinkedList<Plane>();
-
+    
     private String url = "https://opensky-network.org/api/states/all?";
     
     public FlightController(){
@@ -48,19 +50,53 @@ public class FlightController {
         return planes;
     }
 
+    @GetMapping("/in")
+    public List<Plane> getOutPlanes_IberianPeninsula(){
+        overPeninsula = getPlanes("lamin=36.7&lomin=-8.23&lamax=42&lomax=-2.7");
+        return null;
+    }
+    
     // Obter todos os avioes na area da Peninsula Iberica (retorna uma lista sempre atualizada)
     @GetMapping("/over")
-    private List<Plane> getAllPlanes_IberianPeninsula(){
-        List<Plane> area = getPlanes("lamin=36.7&lomin=-8.23&lamax=42&lomax=-2.7");
+    public List<Plane> getAllPlanes_IberianPeninsula(){
+        entrouNaPeninsula.clear();
+        List<Plane> aux = overPeninsula;
         
-        if(overPeninsula.isEmpty()){
-            overPeninsula = area;
-        } 
-        List<Plane> actualList = area.stream().filter(two -> overPeninsula.stream()
-              .anyMatch(one -> one.getIcao().equals(two.getIcao()) ))
-              .collect(Collectors.toList());
-        System.out.println(actualList);
-        return actualList;      
+        overPeninsula = getPlanes("lamin=36.7&lomin=-8.23&lamax=42&lomax=-2.7");
+        if(aux.isEmpty()) aux = overPeninsula;
+        
+        boolean in;
+        for(Plane p: overPeninsula){
+            in = false;
+            String icao = p.getIcao();
+            for(Plane a: aux){
+                if(a.getIcao().equals(icao)){
+                    in = true;
+                }
+            }
+            if(in==false){
+                entrouNaPeninsula.add(p);
+                System.out.println("Entrou");
+            }
+        }
+        System.out.print("Entrou Lista: " + entrouNaPeninsula);
+        if(!entrouNaPeninsula.isEmpty()){
+            //Ativar evento de entrada
+            
+        }
+                
+        return overPeninsula;
+        
+//        
+//        if(overPeninsula.isEmpty()){
+//            overPeninsula = area;
+//        } 
+//        
+//        List<Plane> actualList = area.stream().filter(two -> overPeninsula.stream()
+//              .anyMatch(one -> one.getIcao().equals(two.getIcao()) ))
+//              .collect(Collectors.toList());
+//        System.out.println(actualList);
+//        return actualList;      
     }
     
     // Obter dados do aviao com o icao=id
