@@ -24,24 +24,25 @@ const H1 = styled.h1({
     textAlign: "center"
 });
 
-class Palha extends React.Component {
+class DataPlaneComponente extends React.Component {
 
     constructor(props){
-      super(props);
-        this.state = {
-          planes:[]
-        }
-      this.loadData = this.loadData.bind(this);
+        super(props);
+            this.state = {
+                planes:[]
+            }
+        this.loadData = this.loadData.bind(this);
     }
-
+    
     componentDidMount(){
-      this.loadData();
+        this.loadData();
 //      setInterval(this.loadData, 10000);
     }
 
     async loadData() {
         try {
-            axios.get("http://localhost:8081/3442cc").then(response => {
+            var url = "http://localhost:8081/" + this.props.match.params.id;
+            axios.get(url).then(response => {
                 this.setState({ planes: response.data })
             });
         } catch (e) {
@@ -50,12 +51,10 @@ class Palha extends React.Component {
     }     
             
     render(){       
-      
       return(
         <div>
-            <H0 className="text-center" > OLAAAAA <b style={{ color: '#0097a7'}}>over</b> the <b>Irebian Peninsula</b> </H0>
+          <H0 className="text-center" > <b>{this.props.match.params.id}</b> plane </H0>
             
-        
           <table className = "table table-striped">
             <thead>
               <tr>
@@ -87,12 +86,14 @@ class Palha extends React.Component {
                 }
               </tbody>
           </table>
+        
+          
           
         </div>
       );
     }
 }
 
-export default Palha
+export default DataPlaneComponente
 
 

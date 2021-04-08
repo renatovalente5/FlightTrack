@@ -5,7 +5,7 @@ import IP_OverComponent from "./components/IP_OverComponent";
 import IP_EntryComponent from "./components/IP_EntryComponent";
 import Test from "./components/Test";
 import MapComponent from "./components/MapComponent";
-import Palha from "./components/Palha";
+import DataPlaneComponente from "./components/DataPlaneComponente";
 import styled from 'styled-components';
 
 const H0 = styled.h1({
@@ -35,10 +35,11 @@ class App extends React.Component {
         
                     <nav className="navbar navbar-expand-lg navbar-light bg-light">
                         <ul className="navbar-nav mr-auto">
-                            <li><Link to={'/over'} className="nav-link">Over </Link></li>
+                            <li><Link to={'/over'} className="nav-link"><b>Iberian Peninsula</b> </Link></li>
+                            <li><Link to={'/historic'} className="nav-link">Historic</Link></li>
+
                             <li><Link to={'/entry'} className="nav-link">Entered</Link></li>
                             <li><Link to={'/test'} className="nav-link">Test</Link></li>
-                            <li><Link to={'/palha'} className="nav-link">PALHA</Link></li>
                         </ul>
                     </nav>
                     <hr />
@@ -46,7 +47,7 @@ class App extends React.Component {
                         <Route path='/over' component={IP_OverComponent} />
                         <Route path='/entry' component={IP_EntryComponent} />
                         <Route path='/test' component={Test} />
-                        <Route path='/palha' component={Palha} />
+                        <Route path='/:id' component={DataPlaneComponente} />
                     </Switch>
                 </div>
             </Router>

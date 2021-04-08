@@ -1,7 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-//import {Button} from 'react-bootstrap';
-//import ButtonToolbar from 'react-bootstrap/Button';
 import {ButtonToolbar} from 'react-bootstrap';
 import {ModalComponent} from './ModalComponent';
 import axios from "axios";
@@ -30,8 +28,7 @@ class IP_OverComponent extends React.Component {
       super(props);
         this.state = {
           planes:[],
-          addModalShow: false,
-          idSelectedPlane: "RITA"
+          addModalShow: false
         }
       this.loadData = this.loadData.bind(this);
     }
@@ -52,14 +49,9 @@ class IP_OverComponent extends React.Component {
     }
     
     buttonOnClick(planeIdentifier) {
-      //console.log("Button clicked = " + planeIdentifier);
-      //window.open(`/child?id=${planeIdentifier}`, "_blank");
-      
-      window.open(`/id=${planeIdentifier}`,"_blank");
-      //window.alert(planeIdentifier);
+      window.open(`/${planeIdentifier}`,"_blank");
     }
       
-            
     render(){       
       let addModalClose = () => this.setState({addModalShow:false});
       const {dados} = this.state;
@@ -68,7 +60,7 @@ class IP_OverComponent extends React.Component {
         const verm = "AMANTE";
       return(
         <div>
-            <H0 className="text-center" > All planes <b style={{ color: '#0097a7'}}>over</b> the <b>Irebian Peninsula</b> </H0>
+            <H0 className="text-center" > All planes <b>over</b> the <b>Irebian Peninsula</b> </H0>
             
         <AlertaVerde brand={verd} />
         <AlertaVermelho brand={verm} />
@@ -124,9 +116,8 @@ class AlertaVerde extends React.Component {
     return (
         <div>
             <Alert variant="success">
-                <Alert.Heading>ALERT !</Alert.Heading>
-                <hr />
-                <p className="mb-0"> Acabou de <b>sair</b> na Península Ibérica o avião <b> {this.props.brand} </b>. </p>  
+                <Alert.Heading style={{ fontSize: 20}}><b>ALERT</b>!</Alert.Heading>
+                <p>The <b>{this.props.brand}</b> plane just entered the Iberian Peninsula.</p>   
             </Alert>
         </div>
 
@@ -139,9 +130,8 @@ class AlertaVermelho extends React.Component {
     return (
         <div>
             <Alert variant="danger">
-                <Alert.Heading>ALERT !</Alert.Heading>
-                <hr />
-                <p className="mb-0"> Acabou de <b>sair</b> na Península Ibérica o avião <b> {this.props.brand} </b>. </p>  
+                <Alert.Heading style={{ fontSize: 20}}><b>ALERT</b>!</Alert.Heading>
+                <p>The <b>{this.props.brand}</b> plane just left the Iberian Peninsula.</p> 
             </Alert>
         </div>
 

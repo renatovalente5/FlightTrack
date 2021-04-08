@@ -50,21 +50,21 @@ public class FlightController {
         }
         return planes;
     }
+    
+    // Obter dados do aviao com o icao=id
+    @GetMapping("/{id}")
+    public List<Plane> getDataPlane(@PathVariable String id){
+        String q = "icao24=" + id;
+        List<Plane> planeList = getPlanes(q);
+        return planeList;
+    }
 
     @GetMapping("/in")
     public List<Plane> getOutPlanes_IberianPeninsula(){
         overPeninsula = getPlanes("lamin=36.7&lomin=-8.23&lamax=42&lomax=-2.7");
         return null;
     }
-    
-    
-    @GetMapping("/{id}")
-    public List<Plane> testeRita(@PathVariable String id){
-        String q = "icao24=" + id;
-        List<Plane> planeList = getPlanes(q);
-        return planeList;
-    }
-    
+        
     // Obter todos os avioes na area da Peninsula Iberica (retorna uma lista sempre atualizada)
     @GetMapping("/over")
     public List<Plane> getAllPlanes_IberianPeninsula(){
@@ -141,15 +141,7 @@ public class FlightController {
         System.out.println(actualList);
         return actualList;      
     }
-    
-    // Obter dados do aviao com o icao=id
-    @GetMapping("/planes/{id}")
-    public List<Plane> getDataPlane(@PathVariable String id){
-        String q = "icao24=" + id;
-        List<Plane> planeList = getPlanes(q);
-        return planeList;
-    }
-       
+           
     @GetMapping("/test")
     public String  getTest(){        
         //Guardar percuso de todos os aviões a cada 10 seg.
