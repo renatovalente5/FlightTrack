@@ -14,12 +14,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PathVariable;
 import reactor.core.publisher.Flux;
 
 @RestController
 //@RequestMapping("/myapp")
 @CrossOrigin("*")
+@EnableScheduling
 public class FlightController {
        
     private RestTemplate restTemplate;
@@ -66,7 +69,9 @@ public class FlightController {
     }
         
     // Obter todos os avioes na area da Peninsula Iberica (retorna uma lista sempre atualizada)
-    @GetMapping("/over")
+    @GetMapping("/over")    
+    // chama a funcao 30 em 30 s (mas nao alterar na front-end)
+    @Scheduled(fixedRate = 30000L)
     public List<Plane> getAllPlanes_IberianPeninsula(){
         //entrouNaPeninsula.clear();
         //saiuDaPeninsula.clear();
@@ -142,31 +147,31 @@ public class FlightController {
         return actualList;      
     }
            
-    @GetMapping("/test")
-    public String  getTest(){        
-        //Guardar percuso de todos os aviões a cada 10 seg.
-        for (Plane p : allPlanes) {
-            LinkedList<Plane> auxList = new LinkedList<Plane>();
-            if(trackerPlane.containsKey(p.getIcao())){
-                
-                auxList = trackerPlane.get(p.getIcao());
-                if(p.getIcao() != null){
-                    auxList.add(p);
-                }
-                trackerPlane.put(p.getIcao(), auxList);
-            }else{
-                if(p.getIcao() != null){
-                    auxList.add(p);
-                }
-                trackerPlane.put(p.getIcao(), auxList);
-            }
-        }
-        logger.debug("Debug log message");
-        for (Map.Entry<String, LinkedList<Plane>> p : trackerPlane.entrySet()) {
-            System.out.println(p.getKey() + ":" + p.getValue());
-        }
-        return "PASSOU NO TESTE";
-    }
+//    @GetMapping("/test")
+//    public String  getTest(){        
+//        //Guardar percuso de todos os aviões a cada 10 seg.
+//        for (Plane p : allPlanes) {
+//            LinkedList<Plane> auxList = new LinkedList<Plane>();
+//            if(trackerPlane.containsKey(p.getIcao())){
+//                
+//                auxList = trackerPlane.get(p.getIcao());
+//                if(p.getIcao() != null){
+//                    auxList.add(p);
+//                }
+//                trackerPlane.put(p.getIcao(), auxList);
+//            }else{
+//                if(p.getIcao() != null){
+//                    auxList.add(p);
+//                }
+//                trackerPlane.put(p.getIcao(), auxList);
+//            }
+//        }
+//        logger.debug("Debug log message");
+//        for (Map.Entry<String, LinkedList<Plane>> p : trackerPlane.entrySet()) {
+//            System.out.println(p.getKey() + ":" + p.getValue());
+//        }
+//        return "PASSOU NO TESTE";
+//    }
     
     @GetMapping(path = "/event", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> streamFlux() {

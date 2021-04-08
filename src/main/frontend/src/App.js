@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import IP_OverComponent from "./components/IP_OverComponent";
 import IP_EntryComponent from "./components/IP_EntryComponent";
 import Test from "./components/Test";
-import MapComponent from "./components/MapComponent";
 import DataPlaneComponente from "./components/DataPlaneComponente";
 import styled from 'styled-components';
 

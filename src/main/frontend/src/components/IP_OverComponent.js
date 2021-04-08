@@ -6,6 +6,7 @@ import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import styled from 'styled-components';
 import Alert from 'react-bootstrap/Alert';
+import { GoogleMap, withScriptjs, withGoogleMap, Marker} from 'react-google-maps';
 
 const H0 = styled.h1({
     fontSize: 25,
@@ -53,59 +54,66 @@ class IP_OverComponent extends React.Component {
     }
       
     render(){       
-      let addModalClose = () => this.setState({addModalShow:false});
-      const {dados} = this.state;
-      
+        let addModalClose = () => this.setState({addModalShow:false});
+
+        const WrappeMap = withScriptjs(withGoogleMap((props) =>
+            <GoogleMap defaultZoom={7} defaultCenter={{ lat: 40.483011, lng: -4.087557}}>
+                {this.state.planes.map((plane) => (
+                    <Marker key={plane.icao} position={{ lat: plane.latitude, lng: plane.longitude}}/>
+                    )
+                )}
+            </GoogleMap>
+            ))
+        
         const verd = "RITA";
         const verm = "AMANTE";
-      return(
-        <div>
-            <H0 className="text-center" > All planes <b>over</b> the <b>Irebian Peninsula</b> </H0>
-            
-        <AlertaVerde brand={verd} />
-        <AlertaVermelho brand={verm} />
         
-          <table className = "table table-striped">
-            <thead>
-              <tr>
-                <td>Icao24</td>
-                <td>Callsign</td>
-                <td>Origin Country</td>
-                <td>Time position</td>
-                <td>Longitude</td>
-                <td>Latitude</td>
-                <td>Altitude</td>
-                <td>Velocity</td>
-                <td>View</td>
-              </tr>
-            </thead>
-              <tbody>
-                {
-                  this.state.planes.map(
-                    plane =>
-                    <tr key = {plane.icao}>
-                      <td>{plane.icao}</td>
-                      <td>{plane.callsign}</td>
-                      <td>{plane.origin_country}</td>
-                      <td>{plane.time_position}</td>
-                      <td>{plane.longitude}</td>
-                      <td>{plane.latitude}</td>
-                      <td>{plane.baro_altitude}</td>
-                      <td>{plane.velocity}</td>
-                      <td> 
-                      <ButtonToolbar>
-                        <button variant ="danger" onClick={() => this.buttonOnClick(plane.icao)}>
-                            View
-                        </button>
-                       
-                      </ButtonToolbar> 
-                        </td>
-                    </tr>
-                  )
+        return(
+            <div>
+                <H0 className="text-center" > All planes <b>over</b> the <b>Irebian Peninsula</b> </H0>
+            
+                <AlertaVerde brand={verd} />
+                <AlertaVermelho brand={verm} />
+                
+                <WrappeMap googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyCYtWGt6BW7bHK-u7emPPVsYWsoMUKODHI&v=3.exp&libraries=geometry,drawing,places`}
+                            loadingElement={<div style={{ height: `100%` }} />}
+                            containerElement={<div style={{ height: `400px` }} />}
+                            mapElement={<div style={{ height: `100%` }} />} />
+                
+                <table className = "table table-striped">
+                    <thead>
+                        <tr>
+                            <td>Icao24</td>
+                            <td>Callsign</td>
+                            <td>Origin Country</td>
+                            <td>Time position</td>
+                            <td>Longitude</td>
+                            <td>Latitude</td>
+                            <td>Altitude</td>
+                            <td>Velocity</td>
+                            <td>View</td>
+                        </tr>
+                    </thead>
+                    <tbody> { this.state.planes.map( plane =>
+                        <tr key = {plane.icao}>
+                            <td>{plane.icao}</td>
+                            <td>{plane.callsign}</td>
+                            <td>{plane.origin_country}</td>
+                            <td>{plane.time_position}</td>
+                            <td>{plane.longitude}</td>
+                            <td>{plane.latitude}</td>
+                            <td>{plane.baro_altitude}</td>
+                            <td>{plane.velocity}</td>
+                            <td> 
+                                <ButtonToolbar>
+                                    <button variant ="danger" onClick={() => this.buttonOnClick(plane.icao)}> View </button>
+                                </ButtonToolbar> 
+                            </td>
+                        </tr>
+                    )
                 }
               </tbody>
           </table>
-          
         </div>
       );
     }

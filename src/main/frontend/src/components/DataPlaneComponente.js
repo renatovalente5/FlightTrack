@@ -36,7 +36,7 @@ class DataPlaneComponente extends React.Component {
     
     componentDidMount(){
         this.loadData();
-//      setInterval(this.loadData, 10000);
+//        setInterval(this.loadData, 10000);
     }
 
     async loadData() {

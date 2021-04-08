@@ -1,51 +1,49 @@
-import React from "react";
-import Alert from 'react-bootstrap/Alert';
+import React, { Component } from 'react';
 import axios from "axios";
+import { GoogleMap, withScriptjs, withGoogleMap, Marker} from 'react-google-maps';
 
-class Test extends React.Component {
 
+class Test extends Component {
+    
     constructor(props){
-      super(props)
+        super(props);
         this.state = {
-          ddd:""
+            planes:[]
         }
-      this.loadData = this.loadData.bind(this);
+        this.loadData = this.loadData.bind(this);
     }
-
-    componentDidMount(){
-      this.loadData();
-//      setInterval(this.loadData, 10000);
-    }
-
+    
     async loadData() {
         try {
-            axios.get("http://localhost:8081/test").then(response => {
-                this.setState({
-                    planes: response.data
-                })
+            axios.get("http://localhost:8081/over").then(response => {
+                this.setState({ planes: response.data })
             });
         } catch (e) {
             console.log(e);
         }
     }
-          
-    render(){
-      return(
-        <div>
-          <h3 className="text-center"> Test </h3>
-
-           <Alert variant="warning">
-            <Alert.Heading>ALERT !</Alert.Heading>
-            <hr />
-            <p className="mb-0"> Acabou de entrar na Península Ibérica o avião <b> XPTO </b> com país de origem XPTO2, latitude XPTO3 e longitude XPTO4. </p>  
-          </Alert>
-
-          {this.state.ddd}
-        </div>
-      )
-    }
+    
+    render() {
+        
+        const WrappeMap = withScriptjs(withGoogleMap((props) =>
+            <GoogleMap defaultZoom={5} defaultCenter={{ lat: 40.483011, lng: -4.087557}}>
+                {this.state.planes.map((plane) => (
+                    <Marker key={plane.icao} position={{ lat: plane.latitude, lng: plane.longitude}}/>
+                    )
+                )}
+            </GoogleMap>
+          ))
+        
+        return (
+            <div >
+                <WrappeMap googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyCYtWGt6BW7bHK-u7emPPVsYWsoMUKODHI&v=3.exp&libraries=geometry,drawing,places`}
+                loadingElement={<div style={{ height: `100%` }} />}
+                containerElement={<div style={{ height: `400px` }} />}
+                mapElement={<div style={{ height: `100%` }} />}
+                />
+            </div>
+        );
+      }
 }
 
 export default Test
-
-
