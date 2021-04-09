@@ -1,49 +1,31 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import axios from "axios";
-import { GoogleMap, withScriptjs, withGoogleMap, Marker} from 'react-google-maps';
+import ReactMapGL, {Marker} from 'react-map-gl';
 
+export default function Test () {
+        
+    const [viewport, setViewPort] = useState({ 
+        latitude: 39.983011, 
+        longitude: -4.087557, 
+        width: "72vw", 
+        height:"52vh",
+        zoom: 5
+    });
+   
+    return (
+        <div >
+            <ReactMapGL {...viewport} 
+            mapboxApiAccessToken="pk.eyJ1Ijoicml0YS1hbWFudGU5OTU1IiwiYSI6ImNrbmEyZGpzYzBqcjcybm55Z2NyOTVkazMifQ.oRw17OIsKSA0CeIUG2UC1Q"
+            onViewportChange={nextviewport => {
+                setViewPort(nextviewport);
+            }} >   
+                <Marker latitude={40.6405} longitude={8.6538}>
+                    <img src="travelling.png" width="20" height="20"/>
+                </Marker>
+                        
+            </ReactMapGL>
 
-class Test extends Component {
+        </div>
+    );
     
-    constructor(props){
-        super(props);
-        this.state = {
-            planes:[]
-        }
-        this.loadData = this.loadData.bind(this);
-    }
-    
-    async loadData() {
-        try {
-            axios.get("http://localhost:8081/over").then(response => {
-                this.setState({ planes: response.data })
-            });
-        } catch (e) {
-            console.log(e);
-        }
-    }
-    
-    render() {
-        
-        const WrappeMap = withScriptjs(withGoogleMap((props) =>
-            <GoogleMap defaultZoom={5} defaultCenter={{ lat: 40.483011, lng: -4.087557}}>
-                {this.state.planes.map((plane) => (
-                    <Marker key={plane.icao} position={{ lat: plane.latitude, lng: plane.longitude}}/>
-                    )
-                )}
-            </GoogleMap>
-          ))
-        
-        return (
-            <div >
-                <WrappeMap googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyCYtWGt6BW7bHK-u7emPPVsYWsoMUKODHI&v=3.exp&libraries=geometry,drawing,places`}
-                loadingElement={<div style={{ height: `100%` }} />}
-                containerElement={<div style={{ height: `400px` }} />}
-                mapElement={<div style={{ height: `100%` }} />}
-                />
-            </div>
-        );
-      }
 }
-
-export default Test

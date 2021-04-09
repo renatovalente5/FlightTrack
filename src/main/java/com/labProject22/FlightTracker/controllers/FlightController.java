@@ -64,10 +64,10 @@ public class FlightController {
 
     @GetMapping("/in")
     public List<Plane> getOutPlanes_IberianPeninsula(){
-        overPeninsula = getPlanes("lamin=36.7&lomin=-8.23&lamax=42&lomax=-2.7");
+        overPeninsula = getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
         return null;
     }
-        
+    
     // Obter todos os avioes na area da Peninsula Iberica (retorna uma lista sempre atualizada)
     @GetMapping("/over")    
     // chama a funcao 30 em 30 s (mas nao alterar na front-end)
@@ -77,7 +77,7 @@ public class FlightController {
         //saiuDaPeninsula.clear();
         List<Plane> aux = overPeninsula;
         
-        overPeninsula = getPlanes("lamin=36.7&lomin=-8.23&lamax=42&lomax=-2.7");
+        overPeninsula = getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
         if(aux.isEmpty()) aux = overPeninsula;
         
         //Para ver se ENTROU algum Avião
@@ -122,8 +122,7 @@ public class FlightController {
 
                 
         return overPeninsula;
-        
-//        
+    //        
 //        if(overPeninsula.isEmpty()){
 //            overPeninsula = area;
 //        } 
@@ -135,10 +134,18 @@ public class FlightController {
 //        return actualList;      
     }
     
+    // Obter todos os avioes na area da Peninsula Iberica (mapa)
+    @GetMapping("/map")    
+    @Scheduled(fixedRate = 2000L)     // chama a funcao 30 em 30 s (mas nao alterar na front-end)
+    public List<Plane> getIberianPeninsula(){
+        return getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
+    }
+        
+    
     @GetMapping("/over2")
     public List<Plane> teste(){
         List<Plane> antiga = overPeninsula;
-        List<Plane> nova = getPlanes("lamin=36.7&lomin=-8.23&lamax=42&lomax=-2.7");
+        List<Plane> nova = getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
         
         List<Plane> actualList = nova.stream().filter(two -> overPeninsula.stream()
               .anyMatch(one -> one.getIcao().equals(two.getIcao()) ))
