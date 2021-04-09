@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, SyntheticEvent  } from "react";
 import ReactDOM from "react-dom";
 import {ButtonToolbar} from 'react-bootstrap';
 import axios from "axios";
@@ -28,14 +28,16 @@ class IP_OverComponent extends React.Component {
     constructor(props){
       super(props);
         this.state = {
-          planes:[]
+          planes:[], 
+          search: '', 
+          searchPlane: []
         }
       this.loadData = this.loadData.bind(this);
     }
 
     componentDidMount(){
       this.loadData();
-//      setInterval(this.loadData, 10000);
+      setInterval(this.loadData, 10000);
     }
 
     async loadData() {
@@ -52,6 +54,23 @@ class IP_OverComponent extends React.Component {
       window.open(`/${planeIdentifier}`,"_blank");
     }
     
+    mySubmitHandler = (event) => {
+        event.preventDefault();
+        const p = this.state.search;
+        
+        if (p === "") {
+            console.log("OLA");
+        
+        } else {
+            console.log("OLEEE " + p);
+            
+        }    
+    }
+    
+    myChangeHandler = (event) => {
+        this.setState({search: event.target.value});
+    }
+  
     render(){       
         
         const verd = "RITA";
@@ -61,6 +80,16 @@ class IP_OverComponent extends React.Component {
             <div>
                 <H0 className="text-center" > All planes <b>over</b> the <b>Irebian Peninsula</b> </H0>
                 
+                <form onSubmit={this.mySubmitHandler}>
+                <p> Search flights by "Callsign": {' '}
+                    <input type='text' onChange={this.myChangeHandler} />
+                    <input type='submit' />
+                </p>                    
+                </form>
+                
+                <input id="myInput" class="prompt" type="text" placeholder="Procurar..."/>
+                <i class="search icon"></i>
+                 
                 <AlertaVerde brand={verd} />
                 <AlertaVermelho brand={verm} />
                 
@@ -78,7 +107,7 @@ class IP_OverComponent extends React.Component {
                             <td>View</td>
                         </tr>
                     </thead>
-                    <tbody> { this.state.planes.map( plane =>
+                    <tbody id="myTable"> { this.state.planes.map( plane =>
                         <tr key = {plane.icao}>
                             <td>{plane.icao}</td>
                             <td>{plane.callsign}</td>
@@ -130,5 +159,6 @@ class AlertaVermelho extends React.Component {
     );
   }
 }
+
 
 export default IP_OverComponent

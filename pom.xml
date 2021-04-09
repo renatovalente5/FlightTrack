@@ -95,6 +95,13 @@
                     <artifactId>spring-kafka</artifactId>
                     <version>2.6.7</version>
                 </dependency>
+                
+                
+                <dependency>
+                    <groupId>org.apache.kafka</groupId>
+                    <artifactId>kafka-streams</artifactId>
+                 </dependency>
+
 	</dependencies>
 
 	<build>

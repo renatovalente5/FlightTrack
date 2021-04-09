@@ -7,6 +7,7 @@ import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import styled from 'styled-components';
 import Alert from 'react-bootstrap/Alert';
+import ReactMapGL, {Marker} from 'react-map-gl';
 
 const H0 = styled.h1({
     fontSize: 25,
@@ -35,7 +36,7 @@ class DataPlaneComponente extends React.Component {
     
     componentDidMount(){
         this.loadData();
-//        setInterval(this.loadData, 10000);
+        setInterval(this.loadData, 10000);
     }
 
     async loadData() {
@@ -50,46 +51,48 @@ class DataPlaneComponente extends React.Component {
     }     
             
     render(){       
-      return(
-        <div>
-          <H0 className="text-center" > <b>{this.props.match.params.id}</b> plane </H0>
-            
-          <table className = "table table-striped">
-            <thead>
-              <tr>
-                <td>Icao24</td>
-                <td>Callsign</td>
-                <td>Origin Country</td>
-                <td>Time position</td>
-                <td>Longitude</td>
-                <td>Latitude</td>
-                <td>Altitude</td>
-                <td>Velocity</td>
-              </tr>
-            </thead>
-              <tbody>
-                {
-                  this.state.planes.map(
-                    plane =>
-                    <tr key = {plane.icao}>
-                      <td>{plane.icao}</td>
-                      <td>{plane.callsign}</td>
-                      <td>{plane.origin_country}</td>
-                      <td>{plane.time_position}</td>
-                      <td>{plane.longitude}</td>
-                      <td>{plane.latitude}</td>
-                      <td>{plane.baro_altitude}</td>
-                      <td>{plane.velocity}</td>
-                    </tr>
-                  )
-                }
-              </tbody>
-          </table>
-        
-          
-          
-        </div>
-      );
+        return(
+            <div>
+                <H0 className="text-center" > <b>{this.props.match.params.id}</b> plane </H0>
+                
+                <ReactMapGL latitude={39.983011} longitude={-4.087557} width="72.3vw" height="67vh" zoom={5} mapboxApiAccessToken="pk.eyJ1Ijoicml0YS1hbWFudGU5OTU1IiwiYSI6ImNrbmEyZGpzYzBqcjcybm55Z2NyOTVkazMifQ.oRw17OIsKSA0CeIUG2UC1Q">
+                    {this.state.planes.map( plane => (
+                        <Marker key={plane.icao} latitude={plane.latitude} longitude={plane.longitude}>
+                            <img src="point.png" width="5" height="5"/>
+                        </Marker>
+                        )
+                    )}
+                </ReactMapGL>
+                
+                <table className = "table table-striped">
+                    <thead>
+                        <tr>
+                            <td>Icao24</td>
+                            <td>Callsign</td>
+                            <td>Origin Country</td>
+                            <td>Time position</td>
+                            <td>Longitude</td>
+                            <td>Latitude</td>
+                            <td>Altitude</td>
+                            <td>Velocity</td>
+                        </tr>
+                    </thead>
+                    <tbody> {this.state.planes.map( plane =>
+                        <tr key = {plane.icao}>
+                            <td>{plane.icao}</td>
+                            <td>{plane.callsign}</td>
+                            <td>{plane.origin_country}</td>
+                            <td>{plane.time_position}</td>
+                            <td>{plane.longitude}</td>
+                            <td>{plane.latitude}</td>
+                            <td>{plane.baro_altitude}</td>
+                            <td>{plane.velocity}</td>
+                        </tr>
+                    )}
+                    </tbody>
+                </table>
+            </div>
+        );
     }
 }
 
