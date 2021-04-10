@@ -51,7 +51,7 @@ class MapComponent extends React.Component {
     render(){                       
         return(
             <div >
-                <ReactMapGL latitude={39.983011} longitude={-4.087557} width="72.3vw" height="67vh" zoom={5} mapboxApiAccessToken="pk.eyJ1Ijoicml0YS1hbWFudGU5OTU1IiwiYSI6ImNrbmEyZGpzYzBqcjcybm55Z2NyOTVkazMifQ.oRw17OIsKSA0CeIUG2UC1Q">
+                <ReactMapGL latitude={39.983011} longitude={-4.087557} width="72.3vw" height="67vh" zoom={4.9} mapboxApiAccessToken="pk.eyJ1Ijoicml0YS1hbWFudGU5OTU1IiwiYSI6ImNrbmEyZGpzYzBqcjcybm55Z2NyOTVkazMifQ.oRw17OIsKSA0CeIUG2UC1Q">
                     {this.state.planes.map( plane => (
                         <Marker key={plane.icao} latitude={plane.latitude} longitude={plane.longitude}>
                             <img src="travelling.png" width="15" height="15"/>

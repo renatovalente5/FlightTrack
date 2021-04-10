@@ -92,6 +92,7 @@ class IP_OverComponent extends React.Component {
                 <AlertaVermelho brand={verm} />
                 
                 <input id="myInput" class="prompt" type="text" placeholder="Search..." />
+                <span style={{float: "right"}}>Planes in Iberian Peninsula: {this.state.planes.length}</span>
                 <table className = "table table-striped">
                     <thead>
                         <tr>
