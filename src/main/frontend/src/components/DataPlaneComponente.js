@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 //import {Button} from 'react-bootstrap';
 //import ButtonToolbar from 'react-bootstrap/Button';
 import {ButtonToolbar} from 'react-bootstrap';
+import {ModalComponent} from './ModalComponent';
 import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import styled from 'styled-components';

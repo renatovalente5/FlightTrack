@@ -58,9 +58,10 @@ public class FlightController {
     @GetMapping("/in")
     @Scheduled(fixedRate = 30000L)
     public List<Plane> getOutPlanes_IberianPeninsula(){
-        overPeninsula = getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
+        overPeninsula = getPlanes("lamin=36.7&lomin=-8.23&lamax=42&lomax=-2.7");
         return null;
     }
+<<<<<<< HEAD
 
     // Obter dados (trajeto) do aviao com o icao=id
     @GetMapping("/{id}")
@@ -73,6 +74,9 @@ public class FlightController {
         return null;
     }
     
+=======
+        
+>>>>>>> parent of 7e48cda... Add map section
     // Obter todos os avioes na area da Peninsula Iberica (retorna uma lista sempre atualizada)
     @GetMapping("/over")    
     @Scheduled(fixedRate = 30000L)
@@ -81,7 +85,7 @@ public class FlightController {
         //saiuDaPeninsula.clear();
         List<Plane> aux = overPeninsula;
         
-        overPeninsula = getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
+        overPeninsula = getPlanes("lamin=36.7&lomin=-8.23&lamax=42&lomax=-2.7");
         if(aux.isEmpty()) aux = overPeninsula;
         
         //Para ver se ENTROU algum Avião
@@ -124,6 +128,7 @@ public class FlightController {
                 //Ativar evento de saida
         }
 
+<<<<<<< HEAD
         // Guardar trajeto do aviao
         for (Plane p : overPeninsula) {
             LinkedList<Plane> auxList = new LinkedList<Plane>();
@@ -142,6 +147,27 @@ public class FlightController {
         }
         return overPeninsula;   
     }     
+=======
+                
+        return overPeninsula;
+        
+//        
+//        if(overPeninsula.isEmpty()){
+//            overPeninsula = area;
+//        } 
+//        
+//        List<Plane> actualList = area.stream().filter(two -> overPeninsula.stream()
+//              .anyMatch(one -> one.getIcao().equals(two.getIcao()) ))
+//              .collect(Collectors.toList());
+//        System.out.println(actualList);
+//        return actualList;      
+    }
+    
+    @GetMapping("/over2")
+    public List<Plane> teste(){
+        List<Plane> antiga = overPeninsula;
+        List<Plane> nova = getPlanes("lamin=36.7&lomin=-8.23&lamax=42&lomax=-2.7");
+>>>>>>> parent of 7e48cda... Add map section
         
     @GetMapping(path = "/event", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> streamFlux() {
