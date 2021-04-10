@@ -1,16 +1,12 @@
-<<<<<<< HEAD
-import React, { Component, useState, SyntheticEvent  } from "react";
-=======
-import React from "react";
->>>>>>> parent of 7e48cda... Add map section
+import React, { Component, useState } from "react";
 import ReactDOM from "react-dom";
 import {ButtonToolbar} from 'react-bootstrap';
-import {ModalComponent} from './ModalComponent';
 import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import styled from 'styled-components';
 import Alert from 'react-bootstrap/Alert';
-import { GoogleMap, withScriptjs, withGoogleMap, Marker} from 'react-google-maps';
+//import { GoogleMap, withScriptjs, withGoogleMap, Marker} from 'react-google-maps';
+import ReactMapGL, {Marker} from 'react-map-gl';
 
 const H0 = styled.h1({
     fontSize: 25,
@@ -32,21 +28,14 @@ class IP_OverComponent extends React.Component {
     constructor(props){
       super(props);
         this.state = {
-<<<<<<< HEAD
-          planes:[], 
-          search: '', 
-          searchPlane: []
-=======
-          planes:[],
-          addModalShow: false
->>>>>>> parent of 7e48cda... Add map section
+          planes:[]
         }
       this.loadData = this.loadData.bind(this);
     }
 
     componentDidMount(){
       this.loadData();
-      setInterval(this.loadData, 10000);
+//      setInterval(this.loadData, 10000);
     }
 
     async loadData() {
@@ -62,68 +51,18 @@ class IP_OverComponent extends React.Component {
     buttonOnClick(planeIdentifier) {
       window.open(`/${planeIdentifier}`,"_blank");
     }
-<<<<<<< HEAD
     
-    mySubmitHandler = (event) => {
-        event.preventDefault();
-        const p = this.state.search;
-        
-        if (p === "") {
-            console.log("OLA");
-        
-        } else {
-            console.log("OLEEE " + p);
-            
-        }    
-    }
-    
-    myChangeHandler = (event) => {
-        this.setState({search: event.target.value});
-    }
-  
-=======
-      
->>>>>>> parent of 7e48cda... Add map section
     render(){       
-        let addModalClose = () => this.setState({addModalShow:false});
-
-        const WrappeMap = withScriptjs(withGoogleMap((props) =>
-            <GoogleMap defaultZoom={7} defaultCenter={{ lat: 40.483011, lng: -4.087557}}>
-                {this.state.planes.map((plane) => (
-                    <Marker key={plane.icao} position={{ lat: plane.latitude, lng: plane.longitude}}/>
-                    )
-                )}
-            </GoogleMap>
-            ))
         
         const verd = "RITA";
         const verm = "AMANTE";
-        
+                
         return(
             <div>
                 <H0 className="text-center" > All planes <b>over</b> the <b>Irebian Peninsula</b> </H0>
-<<<<<<< HEAD
                 
-                <form onSubmit={this.mySubmitHandler}>
-                <p> Search flights by "Callsign": {' '}
-                    <input type='text' onChange={this.myChangeHandler} />
-                    <input type='submit' />
-                </p>                    
-                </form>
-                
-                <input id="myInput" class="prompt" type="text" placeholder="Procurar..."/>
-                <i class="search icon"></i>
-                 
-=======
-            
->>>>>>> parent of 7e48cda... Add map section
                 <AlertaVerde brand={verd} />
                 <AlertaVermelho brand={verm} />
-                
-                <WrappeMap googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyCYtWGt6BW7bHK-u7emPPVsYWsoMUKODHI&v=3.exp&libraries=geometry,drawing,places`}
-                            loadingElement={<div style={{ height: `100%` }} />}
-                            containerElement={<div style={{ height: `400px` }} />}
-                            mapElement={<div style={{ height: `100%` }} />} />
                 
                 <table className = "table table-striped">
                     <thead>
@@ -139,7 +78,7 @@ class IP_OverComponent extends React.Component {
                             <td>View</td>
                         </tr>
                     </thead>
-                    <tbody id="myTable"> { this.state.planes.map( plane =>
+                    <tbody> { this.state.planes.map( plane =>
                         <tr key = {plane.icao}>
                             <td>{plane.icao}</td>
                             <td>{plane.callsign}</td>
@@ -192,11 +131,4 @@ class AlertaVermelho extends React.Component {
   }
 }
 
-<<<<<<< HEAD
-
 export default IP_OverComponent
-=======
-export default IP_OverComponent
-
-
->>>>>>> parent of 7e48cda... Add map section
