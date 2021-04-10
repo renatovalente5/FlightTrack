@@ -1,9 +1,8 @@
 import React from "react";
-import ReactDOM from "react-dom";
+//import ReactDOM from "react-dom";
 //import {Button} from 'react-bootstrap';
 //import ButtonToolbar from 'react-bootstrap/Button';
 import {ButtonToolbar} from 'react-bootstrap';
-import {ModalComponent} from './ModalComponent';
 import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import styled from 'styled-components';
@@ -25,7 +24,7 @@ const H1 = styled.h1({
     textAlign: "center"
 });
 
-class DataPlaneComponente extends React.Component {
+class DataPlaneComponent extends React.Component {
 
     constructor(props){
         super(props);
@@ -97,6 +96,6 @@ class DataPlaneComponente extends React.Component {
     }
 }
 
-export default DataPlaneComponente
+export default DataPlaneComponent
 
 

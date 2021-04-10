@@ -26,18 +26,12 @@ import reactor.core.publisher.Flux;
 public class FlightController {
        
     private RestTemplate restTemplate;
-    private List<Plane> allPlanes = new LinkedList<Plane>();
-    private List<Plane> irebianPeninsulaPlanes = new LinkedList<Plane>();
-    private List<Plane> startPeninsula = new LinkedList<Plane>();
     private List<Plane> overPeninsula = new LinkedList<Plane>();
     private List<Plane> entrouNaPeninsula = new LinkedList<Plane>();
     private List<Plane> saiuDaPeninsula = new LinkedList<Plane>();
-    private List<Plane> alreadyPeninsula = new LinkedList<Plane>();
     private Map<String, LinkedList<Plane>> trackerPlane = new HashMap<String, LinkedList<Plane>>();
     private static final Logger logger = LogManager.getLogger(FlightController.class);
-    
-    private List<Plane> planesIberianP = new LinkedList<Plane>();
-    
+
     private String url = "https://opensky-network.org/api/states/all?";
     
     public FlightController(){
@@ -54,23 +48,33 @@ public class FlightController {
         return planes;
     }
     
-    // Obter dados do aviao com o icao=id
-    @GetMapping("/{id}")
-    public List<Plane> getDataPlane(@PathVariable String id){
-        String q = "icao24=" + id;
-        List<Plane> planeList = getPlanes(q);
-        return planeList;
+    // Obter todos os avioes na area da Peninsula Iberica para mostrar no mapa
+    @GetMapping("/map")    
+    @Scheduled(fixedRate = 5000, initialDelay = 30000)
+    public List<Plane> getIberianPeninsula(){
+        return getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
     }
-
+        
     @GetMapping("/in")
+    @Scheduled(fixedRate = 30000L)
     public List<Plane> getOutPlanes_IberianPeninsula(){
         overPeninsula = getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
+        return null;
+    }
+
+    // Obter dados (trajeto) do aviao com o icao=id
+    @GetMapping("/{id}")
+    public List<Plane> getDataPlane(@PathVariable String id){
+        for (Map.Entry<String, LinkedList<Plane>> plane : trackerPlane.entrySet()){
+            if (plane.getKey().equals(id)){
+                return plane.getValue();
+            }
+        }
         return null;
     }
     
     // Obter todos os avioes na area da Peninsula Iberica (retorna uma lista sempre atualizada)
     @GetMapping("/over")    
-    // chama a funcao 30 em 30 s (mas nao alterar na front-end)
     @Scheduled(fixedRate = 30000L)
     public List<Plane> getAllPlanes_IberianPeninsula(){
         //entrouNaPeninsula.clear();
@@ -120,77 +124,31 @@ public class FlightController {
                 //Ativar evento de saida
         }
 
-                
-        return overPeninsula;
-    //        
-//        if(overPeninsula.isEmpty()){
-//            overPeninsula = area;
-//        } 
-//        
-//        List<Plane> actualList = area.stream().filter(two -> overPeninsula.stream()
-//              .anyMatch(one -> one.getIcao().equals(two.getIcao()) ))
-//              .collect(Collectors.toList());
-//        System.out.println(actualList);
-//        return actualList;      
-    }
-    
-    // Obter todos os avioes na area da Peninsula Iberica (mapa)
-    @GetMapping("/map")    
-    @Scheduled(fixedRate = 2000L)     // chama a funcao 30 em 30 s (mas nao alterar na front-end)
-    public List<Plane> getIberianPeninsula(){
-        return getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
-    }
+        // Guardar trajeto do aviao
+        for (Plane p : overPeninsula) {
+            LinkedList<Plane> auxList = new LinkedList<Plane>();
+            if(trackerPlane.containsKey(p.getIcao())){    
+                auxList = trackerPlane.get(p.getIcao());
+                if(p.getIcao() != null){
+                    auxList.add(p);
+                }
+                trackerPlane.put(p.getIcao(), auxList);
+            }else{
+                if(p.getIcao() != null){
+                    auxList.add(p);
+                }
+                trackerPlane.put(p.getIcao(), auxList);
+            }
+        }
+        return overPeninsula;   
+    }     
         
-    
-    @GetMapping("/over2")
-    public List<Plane> teste(){
-        List<Plane> antiga = overPeninsula;
-        List<Plane> nova = getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
-        
-        List<Plane> actualList = nova.stream().filter(two -> overPeninsula.stream()
-              .anyMatch(one -> one.getIcao().equals(two.getIcao()) ))
-              .collect(Collectors.toList());
-        System.out.println(actualList);
-        return actualList;      
-    }
-           
-//    @GetMapping("/test")
-//    public String  getTest(){        
-//        //Guardar percuso de todos os aviões a cada 10 seg.
-//        for (Plane p : allPlanes) {
-//            LinkedList<Plane> auxList = new LinkedList<Plane>();
-//            if(trackerPlane.containsKey(p.getIcao())){
-//                
-//                auxList = trackerPlane.get(p.getIcao());
-//                if(p.getIcao() != null){
-//                    auxList.add(p);
-//                }
-//                trackerPlane.put(p.getIcao(), auxList);
-//            }else{
-//                if(p.getIcao() != null){
-//                    auxList.add(p);
-//                }
-//                trackerPlane.put(p.getIcao(), auxList);
-//            }
-//        }
-//        logger.debug("Debug log message");
-//        for (Map.Entry<String, LinkedList<Plane>> p : trackerPlane.entrySet()) {
-//            System.out.println(p.getKey() + ":" + p.getValue());
-//        }
-//        return "PASSOU NO TESTE";
-//    }
-    
     @GetMapping(path = "/event", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> streamFlux() {
         return Flux.interval(Duration.ofSeconds(1))
           .map(sequence -> "Flux - " + LocalTime.now().toString());
     }
-    
-//    @GetMapping(value="/ola", produces=MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public Flux<List<Plane>> getStockPrice() {
-//            return stockPriceService.getStockPriceData(stockPriceList);
-//    }
-    
+        
     @GetMapping("/stream-sse")
     public Flux<ServerSentEvent<String>> streamEvents() {
         return Flux.interval(Duration.ofSeconds(1))
@@ -200,12 +158,7 @@ public class FlightController {
               .data("SSE - " + LocalTime.now().toString())
               .build());
     }
-        
-//    @GetMapping("/child?id=")
-//    public void getChild(){
-//        
-//    }
-      
+              
     private Plane addPlane(PlanesResponse p, int i){
         String icao = null;
         String callsign = null;
