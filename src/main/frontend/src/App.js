@@ -32,9 +32,9 @@ class App extends React.Component {
                     <H0 ><i>Flight Tracker</i></H0>
                     <H1 > flights from the Iberian Peninsula</H1>
         
-                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                        <ul className="navbar-nav mr-auto">
-                            <li><Link to={'/map'} className="nav-link"><b>Map</b></Link></li>
+                    <nav className="navbar navbar-expand-lg navbar-light bg-light" >
+                        <ul className="navbar-nav mr-auto" >
+                            <li><Link to={'/map'} className="nav-link" ><b>Map</b></Link></li>
                             <li><Link to={'/over'} className="nav-link"><b>Iberian Peninsula</b> </Link></li>
                             <li><Link to={'/historic'} className="nav-link"><b>Historic</b></Link></li>
                         </ul>

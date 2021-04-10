@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Alert from 'react-bootstrap/Alert';
 //import { GoogleMap, withScriptjs, withGoogleMap, Marker} from 'react-google-maps';
 import ReactMapGL, {Marker} from 'react-map-gl';
+import $ from "jquery";  
 
 const H0 = styled.h1({
     fontSize: 25,
@@ -38,6 +39,13 @@ class IP_OverComponent extends React.Component {
     componentDidMount(){
       this.loadData();
       setInterval(this.loadData, 10000);
+      
+        $('#myInput').on('keyup', function () {
+        var value = $(this).val().toLowerCase();
+        $("#myTable tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
     }
 
     async loadData() {
@@ -79,20 +87,11 @@ class IP_OverComponent extends React.Component {
         return(
             <div>
                 <H0 className="text-center" > All planes <b>over</b> the <b>Irebian Peninsula</b> </H0>
-                
-                <form onSubmit={this.mySubmitHandler}>
-                <p> Search flights by "Callsign": {' '}
-                    <input type='text' onChange={this.myChangeHandler} />
-                    <input type='submit' />
-                </p>                    
-                </form>
-                
-                <input id="myInput" class="prompt" type="text" placeholder="Procurar..."/>
-                <i class="search icon"></i>
-                 
+                                                 
                 <AlertaVerde brand={verd} />
                 <AlertaVermelho brand={verm} />
                 
+                <input id="myInput" class="prompt" type="text" placeholder="Search..." />
                 <table className = "table table-striped">
                     <thead>
                         <tr>
@@ -107,7 +106,7 @@ class IP_OverComponent extends React.Component {
                             <td>View</td>
                         </tr>
                     </thead>
-                    <tbody> { this.state.planes.map( plane =>
+                    <tbody id="myTable"> { this.state.planes.map( plane =>
                         <tr key = {plane.icao}>
                             <td>{plane.icao}</td>
                             <td>{plane.callsign}</td>
