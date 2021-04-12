@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,16 +17,21 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import reactor.core.publisher.Flux;
 
+
 @RestController
+@RequiredArgsConstructor
 //@RequestMapping("/myapp")
 @CrossOrigin("*")
 @EnableScheduling
 public class FlightController {
-       
-    private RestTemplate restTemplate;
+    
+    private final TopicProducer topicProducer; 
+    
+    private RestTemplate restTemplate = new RestTemplate();;
     private List<Plane> overPeninsula = new LinkedList<Plane>();
     private List<Plane> entrouNaPeninsula = new LinkedList<Plane>();
     private List<Plane> saiuDaPeninsula = new LinkedList<Plane>();
@@ -34,9 +40,10 @@ public class FlightController {
 
     private String url = "https://opensky-network.org/api/states/all?";
     
-    public FlightController(){
-        this.restTemplate = new RestTemplate();
-    }
+//    public FlightController(){
+//        this.restTemplate = new RestTemplate();
+////        this.topicProducer = new TopicProducer();
+//    }
         
     // Obter todos os avioes com certos parametros
     public List<Plane> getPlanes(String parameters){
@@ -46,7 +53,7 @@ public class FlightController {
             planes.add(addPlane(obj,i));
         }
         return planes;
-    }
+    }       
     
     // Obter todos os avioes na area da Peninsula Iberica para mostrar no mapa
     @GetMapping("/map")    
@@ -79,6 +86,7 @@ public class FlightController {
     public List<Plane> getAllPlanes_IberianPeninsula(){
         //entrouNaPeninsula.clear();
         //saiuDaPeninsula.clear();
+
         List<Plane> aux = overPeninsula;
         
         overPeninsula = getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
@@ -97,6 +105,7 @@ public class FlightController {
             if(in==false){
                 entrouNaPeninsula.add(p);
                 System.out.println("--- Entrou ---");
+                topicProducer.send("O avião " + p.getIcao() + " entrou na Peninsula!");
             }
         }
         System.out.println("Entrou Lista: " + entrouNaPeninsula);
@@ -117,6 +126,7 @@ public class FlightController {
             if(out==false){
                 saiuDaPeninsula.add(a);
                 System.out.println("--- Saiu ---");
+                topicProducer.send("O avião " + a.getIcao() + " saiu na Peninsula!");
             }
         }
         System.out.println("Saiu Lista: " + saiuDaPeninsula);
