@@ -20,8 +20,9 @@ public class Plane {
 //            strategy = GenerationType.SEQUENCE,
 //            generator = "plane_sequence"
 //    )
-    
-//    private Long Id; 
+
+
+//    private Long Id;
     @Id
     private String icao;            // Unique ICAO 24-bit address of the transponder in hex string representation.
     private String callsign;        // Callsign of the vehicle (8 chars). Can be null if no callsign has been received.

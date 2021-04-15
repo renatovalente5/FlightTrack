@@ -11,6 +11,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,14 +21,15 @@ public class TopicListener {
 
 //    @Value("${topic.name.consumer")
     private String topicName = "user";
+    private static final Logger logger = LogManager.getLogger(FlightController.class);
 
     @KafkaListener(topics = "user", groupId = "group_id")
     public void consume(ConsumerRecord<String, String> payload){
-        log.info("Tópico: {}", topicName);
-        log.info("key: {}", payload.key());
-        log.info("Headers: {}", payload.headers());
-        log.info("Partion: {}", payload.partition());
-        log.info("Order: {}", payload.value());
+        logger.info("Tópico: {}", topicName);
+        logger.info("key: {}", payload.key());
+        logger.info("Headers: {}", payload.headers());
+        logger.info("Partion: {}", payload.partition());
+        logger.info("Order: {}", payload.value());
         System.out.println("Resultou!!!!!!!");
     }
 

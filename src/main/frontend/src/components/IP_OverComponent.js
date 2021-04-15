@@ -81,8 +81,8 @@ class IP_OverComponent extends React.Component {
   
     render(){       
         
-        const verd = "RITA";
-        const verm = "AMANTE";
+        const verd = "X";
+        const verm = "Y";
                 
         return(
             <div>

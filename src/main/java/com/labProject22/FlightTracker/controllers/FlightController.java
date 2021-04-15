@@ -30,8 +30,9 @@ import reactor.core.publisher.Flux;
 public class FlightController {
     
     private final TopicProducer topicProducer; 
-    
-    private RestTemplate restTemplate = new RestTemplate();;
+    private final PlaneInRepository getInPlaneRepository;
+    private final PlaneOutRepository getOutPlanesRepository;
+    private RestTemplate restTemplate = new RestTemplate();
     private List<Plane> overPeninsula = new LinkedList<Plane>();
     private List<Plane> entrouNaPeninsula = new LinkedList<Plane>();
     private List<Plane> saiuDaPeninsula = new LinkedList<Plane>();
@@ -61,13 +62,7 @@ public class FlightController {
     public List<Plane> getIberianPeninsula(){
         return getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
     }
-        
-    @GetMapping("/in")
-    @Scheduled(fixedRate = 30000L)
-    public List<Plane> getOutPlanes_IberianPeninsula(){
-        overPeninsula = getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
-        return null;
-    }
+
 
     // Obter dados (trajeto) do aviao com o icao=id
     @GetMapping("/{id}")
@@ -82,7 +77,7 @@ public class FlightController {
     
     // Obter todos os avioes na area da Peninsula Iberica (retorna uma lista sempre atualizada)
     @GetMapping("/over")    
-    @Scheduled(fixedRate = 30000L)
+    @Scheduled(fixedRate = 10000L)
     public List<Plane> getAllPlanes_IberianPeninsula(){
         //entrouNaPeninsula.clear();
         //saiuDaPeninsula.clear();
@@ -106,6 +101,13 @@ public class FlightController {
                 entrouNaPeninsula.add(p);
                 System.out.println("--- Entrou ---");
                 topicProducer.send("O avião " + p.getIcao() + " entrou na Peninsula!");
+//                TrackerPlane tp = new TrackerPlane(p.getIcao(),p.getOrigin_country(),p.getLongitude(),p.getLatitude());
+                PlaneIn pIn = new PlaneIn(p.getIcao(), p.getCallsign(), p.getOrigin_country(), p.getTime_position(),
+                        p.getLast_contact(), p.getLongitude(), p.getLatitude(), p.getBaro_altitude(),
+                        p.isOn_ground(), p.getVelocity(), p.getTrue_track(), p.getVertical_rate(),
+                        p.getSensors(), p.getGeo_altitude(), p.getSquawk(), p.isSpi(), p.getPosition_source());
+                getInPlaneRepository.save(pIn);
+                System.out.println(".......Salvou na BD........");
             }
         }
         System.out.println("Entrou Lista: " + entrouNaPeninsula);
@@ -127,6 +129,11 @@ public class FlightController {
                 saiuDaPeninsula.add(a);
                 System.out.println("--- Saiu ---");
                 topicProducer.send("O avião " + a.getIcao() + " saiu na Peninsula!");
+                PlaneOut pOut = new PlaneOut(a.getIcao(), a.getCallsign(), a.getOrigin_country(), a.getTime_position(),
+                        a.getLast_contact(), a.getLongitude(), a.getLatitude(), a.getBaro_altitude(),
+                        a.isOn_ground(), a.getVelocity(), a.getTrue_track(), a.getVertical_rate(),
+                        a.getSensors(), a.getGeo_altitude(), a.getSquawk(), a.isSpi(), a.getPosition_source());
+                getOutPlanesRepository.save(pOut);
             }
         }
         System.out.println("Saiu Lista: " + saiuDaPeninsula);
@@ -151,7 +158,25 @@ public class FlightController {
             }
         }
         return overPeninsula;   
-    }     
+    }
+
+    @GetMapping("/getin")
+    @Scheduled(fixedRate = 10000L)
+    public List<PlaneIn> getInPlanesBD(){
+        System.out.println("--------------------------------");
+//        System.out.println(getInPlaneRepository.findAll());
+        System.out.println("--------------------------------");
+        return getInPlaneRepository.findAll();
+    }
+
+    @GetMapping("/getout")
+    @Scheduled(fixedRate = 10000L)
+    public List<PlaneOut> getOutPlanesBD(){
+        System.out.println("--------------------------------");
+//        System.out.println(getOutPlanesRepository.findAll());
+        System.out.println("--------------------------------");
+        return getOutPlanesRepository.findAll();
+    }
         
     @GetMapping(path = "/event", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> streamFlux() {
