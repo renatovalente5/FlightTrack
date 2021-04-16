@@ -19,7 +19,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import reactor.core.publisher.Flux;
 
 
 @RestController
@@ -40,11 +39,7 @@ public class FlightController {
     private static final Logger logger = LogManager.getLogger(FlightController.class);
 
     private String url = "https://opensky-network.org/api/states/all?";
-    
-//    public FlightController(){
-//        this.restTemplate = new RestTemplate();
-////        this.topicProducer = new TopicProducer();
-//    }
+
         
     // Obter todos os avioes com certos parametros
     public List<Plane> getPlanes(String parameters){
@@ -100,7 +95,7 @@ public class FlightController {
             if(in==false){
                 entrouNaPeninsula.add(p);
                 System.out.println("--- Entrou ---");
-                topicProducer.send("O avião " + p.getIcao() + " entrou na Peninsula!");
+                topicProducer.send("plane", "O avião " + p.getIcao() + " entrou na Peninsula!");
 //                TrackerPlane tp = new TrackerPlane(p.getIcao(),p.getOrigin_country(),p.getLongitude(),p.getLatitude());
                 PlaneIn pIn = new PlaneIn(p.getIcao(), p.getCallsign(), p.getOrigin_country(), p.getTime_position(),
                         p.getLast_contact(), p.getLongitude(), p.getLatitude(), p.getBaro_altitude(),
@@ -128,7 +123,7 @@ public class FlightController {
             if(out==false){
                 saiuDaPeninsula.add(a);
                 System.out.println("--- Saiu ---");
-                topicProducer.send("O avião " + a.getIcao() + " saiu na Peninsula!");
+                topicProducer.send("plane", "O avião " + a.getIcao() + " saiu na Peninsula!");
                 PlaneOut pOut = new PlaneOut(a.getIcao(), a.getCallsign(), a.getOrigin_country(), a.getTime_position(),
                         a.getLast_contact(), a.getLongitude(), a.getLatitude(), a.getBaro_altitude(),
                         a.isOn_ground(), a.getVelocity(), a.getTrue_track(), a.getVertical_rate(),
@@ -177,22 +172,7 @@ public class FlightController {
         System.out.println("--------------------------------");
         return getOutPlanesRepository.findAll();
     }
-        
-    @GetMapping(path = "/event", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> streamFlux() {
-        return Flux.interval(Duration.ofSeconds(1))
-          .map(sequence -> "Flux - " + LocalTime.now().toString());
-    }
-        
-    @GetMapping("/stream-sse")
-    public Flux<ServerSentEvent<String>> streamEvents() {
-        return Flux.interval(Duration.ofSeconds(1))
-          .map(sequence -> ServerSentEvent.<String> builder()
-            .id(String.valueOf(sequence))
-              .event("periodic-event")
-              .data("SSE - " + LocalTime.now().toString())
-              .build());
-    }
+
               
     private Plane addPlane(PlanesResponse p, int i){
         String icao = null;

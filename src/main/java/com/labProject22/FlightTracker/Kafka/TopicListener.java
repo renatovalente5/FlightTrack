@@ -19,18 +19,16 @@ import org.apache.logging.log4j.Logger;
 @Service
 public class TopicListener {
 
-//    @Value("${topic.name.consumer")
-    private String topicName = "user";
     private static final Logger logger = LogManager.getLogger(FlightController.class);
 
-    @KafkaListener(topics = "user", groupId = "group_id")
+    @KafkaListener(topics = "plane", groupId = "group_id")
     public void consume(ConsumerRecord<String, String> payload){
-        logger.info("Tópico: {}", topicName);
-        logger.info("key: {}", payload.key());
-        logger.info("Headers: {}", payload.headers());
-        logger.info("Partion: {}", payload.partition());
+        logger.info("Tópico: {}", "plane");
+        // logger.info("key: {}", payload.key());
+        // logger.info("Headers: {}", payload.headers());
+        // logger.info("Partion: {}", payload.partition());
         logger.info("Order: {}", payload.value());
-        System.out.println("Resultou!!!!!!!");
+        System.out.println("Resultou!!!");
     }
 
 }

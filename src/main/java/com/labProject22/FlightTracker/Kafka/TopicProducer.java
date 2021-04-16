@@ -10,21 +10,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TopicProducer {
 
-//    @Value("${topic.name.producer}")
-    private String topicName = "user";
-
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private static final Logger logger = LogManager.getLogger(FlightController.class);
 
-    public void send(String message){
+    public void send(String topic, String message){
         System.out.println("Payload enviado: " + message);
-//        log.info("Payload enviado: {}" message);
-        kafkaTemplate.send(topicName, message);
+        logger.info("Payload enviado: {}", message);
+        kafkaTemplate.send(topic, message);
     }
 
 }
