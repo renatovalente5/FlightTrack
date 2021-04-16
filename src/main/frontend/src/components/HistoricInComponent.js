@@ -5,6 +5,7 @@ import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import styled from 'styled-components';
 import Alert from 'react-bootstrap/Alert';
+//import { GoogleMap, withScriptjs, withGoogleMap, Marker} from 'react-google-maps';
 import ReactMapGL, {Marker} from 'react-map-gl';
 import $ from "jquery";
 
@@ -23,7 +24,7 @@ const H1 = styled.h1({
     textAlign: "center"
 });
 
-class PlanesGetOut extends React.Component {
+class HistoricInComponent extends React.Component {
 
     constructor(props){
         super(props);
@@ -49,7 +50,7 @@ class PlanesGetOut extends React.Component {
 
     async loadData() {
         try {
-            axios.get("http://localhost:8081/getout").then(response => {
+            axios.get("http://localhost:8081/in").then(response => {
                 this.setState({ planes: response.data })
             });
         } catch (e) {
@@ -64,14 +65,6 @@ class PlanesGetOut extends React.Component {
     mySubmitHandler = (event) => {
         event.preventDefault();
         const p = this.state.search;
-
-        if (p === "") {
-            console.log("OLA");
-
-        } else {
-            console.log("OLEEE " + p);
-
-        }
     }
 
     myChangeHandler = (event) => {
@@ -79,16 +72,9 @@ class PlanesGetOut extends React.Component {
     }
 
     render(){
-
-        const verd = "RITA";
-        const verm = "AMANTE";
-
         return(
             <div>
-                <H0 className="text-center" > All planes <b>over</b> the <b>Irebian Peninsula</b> </H0>
-
-                <AlertaVerde brand={verd} />
-                <AlertaVermelho brand={verm} />
+                <H0 className="text-center" > All planes <b>Get In</b> the <b>Irebian Peninsula</b> </H0>
 
                 <input id="myInput" class="prompt" type="text" placeholder="Search..." />
                 <span style={{float: "right"}}>Planes in Iberian Peninsula: {this.state.planes.length}</span>
@@ -131,33 +117,5 @@ class PlanesGetOut extends React.Component {
     }
 }
 
-class AlertaVerde extends React.Component {
-    render() {
-        return (
-            <div>
-                <Alert variant="success">
-                    <Alert.Heading style={{ fontSize: 20}}><b>ALERT</b>!</Alert.Heading>
-                    <p>The <b>{this.props.brand}</b> plane just entered the Iberian Peninsula.</p>
-                </Alert>
-            </div>
 
-        );
-    }
-}
-
-class AlertaVermelho extends React.Component {
-    render() {
-        return (
-            <div>
-                <Alert variant="danger">
-                    <Alert.Heading style={{ fontSize: 20}}><b>ALERT</b>!</Alert.Heading>
-                    <p>The <b>{this.props.brand}</b> plane just left the Iberian Peninsula.</p>
-                </Alert>
-            </div>
-
-        );
-    }
-}
-
-
-export default PlanesGetOut
+export default HistoricInComponent

@@ -160,7 +160,7 @@ public class FlightController {
         return overPeninsula;   
     }
 
-    @GetMapping("/getin")
+    @GetMapping("/in")
     @Scheduled(fixedRate = 10000L)
     public List<PlaneIn> getInPlanesBD(){
         System.out.println("--------------------------------");
@@ -169,7 +169,7 @@ public class FlightController {
         return getInPlaneRepository.findAll();
     }
 
-    @GetMapping("/getout")
+    @GetMapping("/out")
     @Scheduled(fixedRate = 10000L)
     public List<PlaneOut> getOutPlanesBD(){
         System.out.println("--------------------------------");

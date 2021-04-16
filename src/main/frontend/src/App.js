@@ -4,9 +4,8 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import IP_OverComponent from "./components/IP_OverComponent";
 import MapComponent from "./components/MapComponent";
 import DataPlaneComponent from "./components/DataPlaneComponent";
-import HistoricComponent from "./components/HistoricComponent";
-import PlanesGetIn from "./components/PlanesGetIn";
-import PlanesGetOut from "./components/PlanesGetOut";
+import HistoricInComponent from "./components/HistoricInComponent";
+import HistoricOutComponent from "./components/HistoricOutComponent";
 import styled from 'styled-components';
 
 const H0 = styled.h1({
@@ -38,19 +37,17 @@ class App extends React.Component {
                         <ul className="navbar-nav mr-auto" >
                             <li><Link to={'/map'} className="nav-link" ><b>Map</b></Link></li>
                             <li><Link to={'/over'} className="nav-link"><b>Iberian Peninsula</b> </Link></li>
-                            <li><Link to={'/historic'} className="nav-link"><b>Historic</b></Link></li>
-                            <li><Link to={'/getin'} className="nav-link"><b>GetIn</b></Link></li>
-                            <li><Link to={'/getout'} className="nav-link"><b>GetOut</b></Link></li>
+                            <li><Link to={'/getin'} className="nav-link"><b>Historic In</b></Link></li>
+                            <li><Link to={'/getout'} className="nav-link"><b>Historic Out</b></Link></li>
                         </ul>
                     </nav>
                     <hr />
                     <Switch>
                         <Route path='/map' component={MapComponent} />
                         <Route path='/over' component={IP_OverComponent} />
-                        <Route path='/historic' component={HistoricComponent} />
+                        <Route path='/getin' component={HistoricInComponent} />
+                        <Route path='/getout' component={HistoricOutComponent} />
                         <Route path='/:id' component={DataPlaneComponent} />
-                        <Route path='/getin' component={PlanesGetIn} />
-                        <Route path='/getout' component={PlanesGetOut} />
                     </Switch>
                 </div>
             </Router>
