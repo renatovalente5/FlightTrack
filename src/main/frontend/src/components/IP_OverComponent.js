@@ -1,12 +1,7 @@
 import React, { Component, useState, SyntheticEvent  } from "react";
-//import ReactDOM from "react-dom";
 import {ButtonToolbar} from 'react-bootstrap';
 import axios from "axios";
-import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import styled from 'styled-components';
-import Alert from 'react-bootstrap/Alert';
-//import { GoogleMap, withScriptjs, withGoogleMap, Marker} from 'react-google-maps';
-import ReactMapGL, {Marker} from 'react-map-gl';
 import $ from "jquery";  
 
 const H0 = styled.h1({
@@ -23,6 +18,7 @@ const H1 = styled.h1({
     paddingTop: 0,
     textAlign: "center"
 });
+
 
 class IP_OverComponent extends React.Component {
 
@@ -65,14 +61,6 @@ class IP_OverComponent extends React.Component {
     mySubmitHandler = (event) => {
         event.preventDefault();
         const p = this.state.search;
-        
-        if (p === "") {
-            console.log("OLA");
-        
-        } else {
-            console.log("OLEEE " + p);
-            
-        }    
     }
     
     myChangeHandler = (event) => {
@@ -86,7 +74,7 @@ class IP_OverComponent extends React.Component {
                 
         return(
             <div>
-                <H0 className="text-center" > All planes <b>over</b> the <b>Irebian Peninsula</b> </H0>
+                <H0 className="text-center" > All planes <b>over</b> the <b>Iberian Peninsula</b> </H0>
                 
                 <input id="myInput" class="prompt" type="text" placeholder="Search..." />
                 <span style={{float: "right"}}>Planes in Iberian Peninsula: {this.state.planes.length}</span>
@@ -128,34 +116,5 @@ class IP_OverComponent extends React.Component {
       );
     }
 }
-
-// class AlertaVerde extends React.Component {
-//   render() {
-//     return (
-//         <div>
-//             <Alert variant="success">
-//                 <Alert.Heading style={{ fontSize: 20}}><b>ALERT</b>!</Alert.Heading>
-//                 <p>The <b>{this.props.brand}</b> plane just entered the Iberian Peninsula.</p>
-//             </Alert>
-//         </div>
-//
-//     );
-//   }
-// }
-//
-// class AlertaVermelho extends React.Component {
-//   render() {
-//     return (
-//         <div>
-//             <Alert variant="danger">
-//                 <Alert.Heading style={{ fontSize: 20}}><b>ALERT</b>!</Alert.Heading>
-//                 <p>The <b>{this.props.brand}</b> plane just left the Iberian Peninsula.</p>
-//             </Alert>
-//         </div>
-//
-//     );
-//   }
-// }
-
 
 export default IP_OverComponent

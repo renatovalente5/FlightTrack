@@ -1,11 +1,7 @@
 import React, { Component, useState, SyntheticEvent  } from "react";
-//import ReactDOM from "react-dom";
 import {ButtonToolbar} from 'react-bootstrap';
 import axios from "axios";
-import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import styled from 'styled-components';
-import Alert from 'react-bootstrap/Alert';
-import ReactMapGL, {Marker} from 'react-map-gl';
 import $ from "jquery";
 
 const H0 = styled.h1({
@@ -64,14 +60,6 @@ class HistoricOutComponent extends React.Component {
     mySubmitHandler = (event) => {
         event.preventDefault();
         const p = this.state.search;
-
-        if (p === "") {
-            console.log("OLA");
-
-        } else {
-            console.log("OLEEE " + p);
-
-        }
     }
 
     myChangeHandler = (event) => {
@@ -81,7 +69,7 @@ class HistoricOutComponent extends React.Component {
     render(){
         return(
             <div>
-                <H0 className="text-center" > All planes <b>Get Out </b> the <b>Irebian Peninsula</b> </H0>
+                <H0 className="text-center" > All planes <b>Get Out </b> the <b>Iberian Peninsula</b> </H0>
 
                 <input id="myInput" class="prompt" type="text" placeholder="Search..." />
                 <span style={{float: "right"}}>Planes in Iberian Peninsula: {this.state.planes.length}</span>

@@ -20,7 +20,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
 @RestController
 @RequiredArgsConstructor
 //@RequestMapping("/myapp")
@@ -28,7 +27,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 @EnableScheduling
 public class FlightController {
     
-    private final TopicProducer topicProducer; 
+    private final TopicProducer topicProducer;
+    private final TopicListener topicListener;
     private final PlaneInRepository getInPlaneRepository;
     private final PlaneOutRepository getOutPlanesRepository;
     private RestTemplate restTemplate = new RestTemplate();
@@ -40,7 +40,6 @@ public class FlightController {
 
     private String url = "https://opensky-network.org/api/states/all?";
 
-        
     // Obter todos os avioes com certos parametros
     public List<Plane> getPlanes(String parameters){
         PlanesResponse obj = restTemplate.getForObject(url+parameters,PlanesResponse.class);
@@ -51,21 +50,18 @@ public class FlightController {
         return planes;
     }
 
-    @GetMapping("/display")
-    public String vai(String str){
-
-        System.out.println(str);
-        System.out.println("Resultou5!!!");
-        return str;
+    // Obter a ultima mensagem recebida
+    @GetMapping("/msg")
+    public String getMsg(){
+        return topicListener.getMessage();
     }
-    
+
     // Obter todos os avioes na area da Peninsula Iberica para mostrar no mapa
     @GetMapping("/map")    
     @Scheduled(fixedRate = 5000, initialDelay = 30000)
     public List<Plane> getIberianPeninsula(){
         return getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
     }
-
 
     // Obter dados (trajeto) do aviao com o icao=id
     @GetMapping("/{id}")
@@ -82,9 +78,6 @@ public class FlightController {
     @GetMapping("/over")    
     @Scheduled(fixedRate = 10000L)
     public List<Plane> getAllPlanes_IberianPeninsula(){
-        //entrouNaPeninsula.clear();
-        //saiuDaPeninsula.clear();
-
         List<Plane> aux = overPeninsula;
         
         overPeninsula = getPlanes("lamin=36.375299&lomin=-9.789897&lamax=42.911378&lomax=2.259536");
@@ -102,22 +95,18 @@ public class FlightController {
             }
             if(in==false){
                 entrouNaPeninsula.add(p);
-                System.out.println("--- Entrou ---");
-                topicProducer.send("plane", "O aviao " + p.getIcao() + " entrou na Peninsula!");
-//                TrackerPlane tp = new TrackerPlane(p.getIcao(),p.getOrigin_country(),p.getLongitude(),p.getLatitude());
+                System.out.println("--- Came in ---");
+                topicProducer.send("plane", "Plane " + p.getIcao() + " entered the Iberian Peninsula!");
                 PlaneIn pIn = new PlaneIn(p.getIcao(), p.getCallsign(), p.getOrigin_country(), p.getTime_position(),
                         p.getLast_contact(), p.getLongitude(), p.getLatitude(), p.getBaro_altitude(),
                         p.isOn_ground(), p.getVelocity(), p.getTrue_track(), p.getVertical_rate(),
                         p.getSensors(), p.getGeo_altitude(), p.getSquawk(), p.isSpi(), p.getPosition_source());
                 getInPlaneRepository.save(pIn);
-                System.out.println(".......Salvou na BD........");
+                System.out.println("The plane that entered was saved in the database");
+                System.out.println("---------------\n");
             }
         }
-        System.out.println("Entrou Lista: " + entrouNaPeninsula);
-        if(!entrouNaPeninsula.isEmpty()){
-            //Ativar evento de entrada
-        }
-        
+
         //Para ver se SAIU algum Avião
         boolean out;
         for(Plane a: aux){
@@ -130,18 +119,16 @@ public class FlightController {
             }
             if(out==false){
                 saiuDaPeninsula.add(a);
-                System.out.println("--- Saiu ---");
-                topicProducer.send("plane", "O aviao " + a.getIcao() + " saiu na Peninsula!");
+                System.out.println("--- Came out ---");
+                topicProducer.send("plane", "Plane " + a.getIcao() + " left the Iberian Peninsula!");
                 PlaneOut pOut = new PlaneOut(a.getIcao(), a.getCallsign(), a.getOrigin_country(), a.getTime_position(),
                         a.getLast_contact(), a.getLongitude(), a.getLatitude(), a.getBaro_altitude(),
                         a.isOn_ground(), a.getVelocity(), a.getTrue_track(), a.getVertical_rate(),
                         a.getSensors(), a.getGeo_altitude(), a.getSquawk(), a.isSpi(), a.getPosition_source());
                 getOutPlanesRepository.save(pOut);
+                System.out.println("The plane that left was saved in the database");
+                System.out.println("----------------\n");
             }
-        }
-        System.out.println("Saiu Lista: " + saiuDaPeninsula);
-            if(!saiuDaPeninsula.isEmpty()){
-                //Ativar evento de saida
         }
 
         // Guardar trajeto do aviao
@@ -163,25 +150,20 @@ public class FlightController {
         return overPeninsula;   
     }
 
+    // Obter todos os avioes que entraram na area da Peninsula Iberica
     @GetMapping("/in")
     @Scheduled(fixedRate = 10000L)
     public List<PlaneIn> getInPlanesBD(){
-        System.out.println("--------------------------------");
-//        System.out.println(getInPlaneRepository.findAll());
-        System.out.println("--------------------------------");
         return getInPlaneRepository.findAll();
     }
 
+    // Obter todos os avioes que sairam na area da Peninsula Iberica
     @GetMapping("/out")
     @Scheduled(fixedRate = 10000L)
     public List<PlaneOut> getOutPlanesBD(){
-        System.out.println("--------------------------------");
-//        System.out.println(getOutPlanesRepository.findAll());
-        System.out.println("--------------------------------");
         return getOutPlanesRepository.findAll();
     }
 
-              
     private Plane addPlane(PlanesResponse p, int i){
         String icao = null;
         String callsign = null;

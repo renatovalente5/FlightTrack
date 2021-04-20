@@ -7,6 +7,8 @@ import DataPlaneComponent from "./components/DataPlaneComponent";
 import HistoricInComponent from "./components/HistoricInComponent";
 import HistoricOutComponent from "./components/HistoricOutComponent";
 import styled from 'styled-components';
+import 'react-notifications/lib/notifications.css';
+import 'react-notifications-component/dist/theme.css';
 
 const H0 = styled.h1({
     fontSize: 25,

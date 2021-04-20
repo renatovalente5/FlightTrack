@@ -13,6 +13,12 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,16 +26,19 @@ import org.apache.logging.log4j.Logger;
 public class TopicListener {
 
     private static final Logger logger = LogManager.getLogger(FlightController.class);
-
+    private String msg = "";
 
     @KafkaListener(topics = "plane", groupId = "group_id")
     public void consume(ConsumerRecord<String, String> payload){
-        logger.info("Tópico: {}", "plane");
+        logger.info("Topic: {}", "plane");
         // logger.info("key: {}", payload.key());
         // logger.info("Headers: {}", payload.headers());
         // logger.info("Partion: {}", payload.partition());
         logger.info("Order: {}", payload.value());
-        System.out.println("Resultou!!!");
+        msg = payload.value();
     }
 
+    public String getMessage(){
+        return msg;
+    }
 }

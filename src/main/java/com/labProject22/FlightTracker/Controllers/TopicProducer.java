@@ -22,7 +22,7 @@ public class TopicProducer {
     private static final Logger logger = LogManager.getLogger(FlightController.class);
 
     public void send(String topic, String message){
-        System.out.println("Payload enviado: " + message);
+        //System.out.println("Payload enviado: " + message);
         logger.info("Payload enviado: {}", message);
         kafkaTemplate.send(topic, message);
     }

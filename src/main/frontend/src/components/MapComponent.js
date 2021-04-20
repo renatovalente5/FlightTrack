@@ -1,12 +1,8 @@
 import React, { Component, useState } from "react";
-import ReactDOM from "react-dom";
-import {ButtonToolbar} from 'react-bootstrap';
 import axios from "axios";
-import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import styled from 'styled-components';
-import Alert from 'react-bootstrap/Alert';
-//import { GoogleMap, withScriptjs, withGoogleMap, Marker} from 'react-google-maps';
 import ReactMapGL, {Marker} from 'react-map-gl';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 const H0 = styled.h1({
     fontSize: 25,
@@ -28,14 +24,34 @@ class MapComponent extends React.Component {
     constructor(props){
       super(props);
         this.state = {
-          planes:[]
+          planes:[],
+          message:"",
+          aviao:""
         }
       this.loadData = this.loadData.bind(this);
+      this.loadMessages = this.loadMessages.bind(this);
     }
 
     componentDidMount(){
       this.loadData();
-      setInterval(this.loadData, 3000);
+      this.loadMessages();
+      setInterval(this.loadData, 1000);
+      setInterval(this.loadMessages, 1000);
+
+    }
+
+    async loadMessages() {
+        try {
+            axios.get("http://localhost:8080/msg2").then(response => {
+                this.setState({ message: response.data })
+            });
+        } catch (e) {
+            console.log(e);
+        }
+        if (this.state.aviao != this.state.message && this.state.message != ""){
+            NotificationManager.info('',this.state.message ,4000);
+            this.state.aviao = this.state.message;
+        }
     }
 
     async loadData() {
@@ -47,10 +63,12 @@ class MapComponent extends React.Component {
             console.log(e);
         }
     }
-    
-    render(){                       
+
+    render(){
         return(
             <div >
+                <NotificationContainer/>
+
                 <ReactMapGL latitude={39.983011} longitude={-4.087557} width="72.3vw" height="67vh" zoom={4.9} mapboxApiAccessToken="pk.eyJ1Ijoicml0YS1hbWFudGU5OTU1IiwiYSI6ImNrbmEyZGpzYzBqcjcybm55Z2NyOTVkazMifQ.oRw17OIsKSA0CeIUG2UC1Q">
                     {this.state.planes.map( plane => (
                         <Marker key={plane.icao} latitude={plane.latitude} longitude={plane.longitude}>
@@ -64,6 +82,5 @@ class MapComponent extends React.Component {
       );
     }
 }
-
 
 export default MapComponent
