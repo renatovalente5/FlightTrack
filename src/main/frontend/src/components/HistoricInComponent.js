@@ -50,7 +50,7 @@ class HistoricInComponent extends React.Component {
 
     async loadData() {
         try {
-            axios.get("http://localhost:8081/in").then(response => {
+            axios.get("http://localhost:8080/in").then(response => {
                 this.setState({ planes: response.data })
             });
         } catch (e) {

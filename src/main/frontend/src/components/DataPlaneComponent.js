@@ -41,7 +41,7 @@ class DataPlaneComponent extends React.Component {
 
     async loadData() {
         try {
-            var url = "http://localhost:8081/" + this.props.match.params.id;
+            var url = "http://localhost:8080/" + this.props.match.params.id;
             axios.get(url).then(response => {
                 this.setState({ planes: response.data })
             });

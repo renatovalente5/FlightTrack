@@ -1,6 +1,7 @@
-version: '2.2'
+version: '3'
 
 services:
+
   zookeeper:
     image: strimzi/kafka:0.19.0-kafka-2.5.0
     command: [
@@ -38,15 +39,3 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
 
-  react:
-    container_name: react
-    build:
-      context: .
-      dockerfile: src/main/frontend/Dockerfile
-    volumes:
-      - '.:/app'
-      - '/app/node_modules'
-    ports:
-      - 3000:3000
-    environment:
-      - CHOKIDAR_USEPOLLING=true

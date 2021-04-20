@@ -49,7 +49,7 @@ class HistoricOutComponent extends React.Component {
 
     async loadData() {
         try {
-            axios.get("http://localhost:8081/out").then(response => {
+            axios.get("http://localhost:8080/out").then(response => {
                 this.setState({ planes: response.data })
             });
         } catch (e) {

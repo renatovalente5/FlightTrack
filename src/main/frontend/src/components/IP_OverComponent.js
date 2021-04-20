@@ -50,7 +50,7 @@ class IP_OverComponent extends React.Component {
 
     async loadData() {
         try {
-            axios.get("http://localhost:8081/over").then(response => {
+            axios.get("http://localhost:8080/over").then(response => {
                 this.setState({ planes: response.data })
             });
         } catch (e) {

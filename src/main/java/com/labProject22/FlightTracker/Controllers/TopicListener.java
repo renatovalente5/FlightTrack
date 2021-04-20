@@ -21,6 +21,7 @@ public class TopicListener {
 
     private static final Logger logger = LogManager.getLogger(FlightController.class);
 
+
     @KafkaListener(topics = "plane", groupId = "group_id")
     public void consume(ConsumerRecord<String, String> payload){
         logger.info("Tópico: {}", "plane");

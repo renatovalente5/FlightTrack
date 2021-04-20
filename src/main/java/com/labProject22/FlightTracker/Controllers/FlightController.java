@@ -49,7 +49,15 @@ public class FlightController {
             planes.add(addPlane(obj,i));
         }
         return planes;
-    }       
+    }
+
+    @GetMapping("/display")
+    public String vai(String str){
+
+        System.out.println(str);
+        System.out.println("Resultou5!!!");
+        return str;
+    }
     
     // Obter todos os avioes na area da Peninsula Iberica para mostrar no mapa
     @GetMapping("/map")    
@@ -95,7 +103,7 @@ public class FlightController {
             if(in==false){
                 entrouNaPeninsula.add(p);
                 System.out.println("--- Entrou ---");
-                topicProducer.send("plane", "O avião " + p.getIcao() + " entrou na Peninsula!");
+                topicProducer.send("plane", "O aviao " + p.getIcao() + " entrou na Peninsula!");
 //                TrackerPlane tp = new TrackerPlane(p.getIcao(),p.getOrigin_country(),p.getLongitude(),p.getLatitude());
                 PlaneIn pIn = new PlaneIn(p.getIcao(), p.getCallsign(), p.getOrigin_country(), p.getTime_position(),
                         p.getLast_contact(), p.getLongitude(), p.getLatitude(), p.getBaro_altitude(),
@@ -123,7 +131,7 @@ public class FlightController {
             if(out==false){
                 saiuDaPeninsula.add(a);
                 System.out.println("--- Saiu ---");
-                topicProducer.send("plane", "O avião " + a.getIcao() + " saiu na Peninsula!");
+                topicProducer.send("plane", "O aviao " + a.getIcao() + " saiu na Peninsula!");
                 PlaneOut pOut = new PlaneOut(a.getIcao(), a.getCallsign(), a.getOrigin_country(), a.getTime_position(),
                         a.getLast_contact(), a.getLongitude(), a.getLatitude(), a.getBaro_altitude(),
                         a.isOn_ground(), a.getVelocity(), a.getTrue_track(), a.getVertical_rate(),
