@@ -42,13 +42,13 @@ class MapComponent extends React.Component {
 
     async loadMessages() {
         try {
-            axios.get("http://localhost:8080/msg2").then(response => {
+            axios.get("http://localhost:8080/msg").then(response => {
                 this.setState({ message: response.data })
             });
         } catch (e) {
             console.log(e);
         }
-        if (this.state.aviao != this.state.message && this.state.message != ""){
+        if (this.state.aviao !== this.state.message && this.state.message !== ""){
             NotificationManager.info('',this.state.message ,4000);
             this.state.aviao = this.state.message;
         }
