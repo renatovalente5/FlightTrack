@@ -1,6 +1,6 @@
 # FlightTrack
 
-## How Run:
+## How to Run:
 Open the terminal in the FlightTrack directory (root) to run Kafka, Zookeeper and DB
 ```
 docker compose up 
